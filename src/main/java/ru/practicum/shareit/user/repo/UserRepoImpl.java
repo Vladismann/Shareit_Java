@@ -1,14 +1,18 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.repo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.repo.UserRepo;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.user.UserMapper.toUserDto;
+import static ru.practicum.shareit.user.dto.UserMapper.toUserDto;
 import static ru.practicum.shareit.user.UserMessages.*;
 
 @Repository
