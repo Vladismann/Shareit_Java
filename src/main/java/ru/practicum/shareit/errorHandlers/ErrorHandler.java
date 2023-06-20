@@ -13,10 +13,17 @@ import ru.practicum.shareit.exceptions.ValidationException;
 @Slf4j
 public class ErrorHandler {
     @ExceptionHandler({ValidationException.class})
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidation(final ValidationException e) {
         log.info(e.getMessage());
         return new ErrorResponse("Ошибка валидации", e.getMessage());
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleValidation(final IllegalArgumentException e) {
+        log.info(e.getMessage());
+        return new ErrorResponse("Ошибка предоставляемых данных", e.getMessage());
     }
 
     @ExceptionHandler({RuntimeException.class})
