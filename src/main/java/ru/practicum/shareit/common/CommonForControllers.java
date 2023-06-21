@@ -7,4 +7,5 @@ public class CommonForControllers {
 
     //For paths
     public static final String BY_ID_PATH = "/{id}";
+    public static final String SEARCH_PATH = "/search";
 }

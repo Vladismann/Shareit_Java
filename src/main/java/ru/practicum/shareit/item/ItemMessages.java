@@ -7,4 +7,5 @@ public class ItemMessages {
     public static final String EMPTY_ITEM_NAME = "Укажите название предмета";
     public static final String EMPTY_ITEM_DESCRIPTION = "Укажите описание предмета";
     public static final String EMPTY_ITEM_AVAILABILITY = "Укажите статус доступности предмета";
+    public static final String EMPTY_ITEM_SEARCH = "Укажите текст для поиска";
 }

@@ -4,11 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.item.ItemMessages.*;
+import static ru.practicum.shareit.item.ItemMessages.INCORRECT_ITEM;
+import static ru.practicum.shareit.item.ItemMessages.INCORRECT_OWNER;
 import static ru.practicum.shareit.item.dto.ItemMapper.toItemDto;
 
 @Repository
@@ -64,5 +69,23 @@ public class ItemRepoImpl implements ItemRepo {
     public ItemDto get(long id) {
         checkItemIsExist(id);
         return toItemDto(items.get(id));
+    }
+
+    @Override
+    public List<ItemDto> getAllByUser(long userId) {
+        return items.values().stream().filter(item -> item.getOwner() == userId).map(ItemMapper::toItemDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ItemDto> search(String text) {
+        if (text.isBlank()) {
+            return new ArrayList<>();
+        }
+        String textForSearch = text.toLowerCase();
+        return items.values().stream()
+                .filter(item -> (item.getName().toLowerCase().contains(textForSearch) || item.getDescription().toLowerCase().contains(textForSearch))
+                        && item.getAvailable())
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 }

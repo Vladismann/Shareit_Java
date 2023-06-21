@@ -8,9 +8,9 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import java.util.List;
 
-import static ru.practicum.shareit.common.CommonForControllers.BY_ID_PATH;
-import static ru.practicum.shareit.common.CommonForControllers.USER_HEADER;
+import static ru.practicum.shareit.common.CommonForControllers.*;
 import static ru.practicum.shareit.common.Messages.*;
 import static ru.practicum.shareit.item.ItemPaths.ITEMS_PATH;
 
@@ -30,7 +30,7 @@ public class ItemController {
     }
 
     @PatchMapping(BY_ID_PATH)
-    public ItemDto updateUser(@RequestHeader(USER_HEADER) long userId,
+    public ItemDto updateItem(@RequestHeader(USER_HEADER) long userId,
                               @PathVariable long id,
                               @Valid @RequestBody Item item) {
         log.info(RECEIVED_PATCH + ITEMS_PATH + "/" + id);
@@ -38,9 +38,22 @@ public class ItemController {
     }
 
     @GetMapping(BY_ID_PATH)
-    public ItemDto updateItem(@PathVariable long id) {
+    public ItemDto getItem(@PathVariable long id) {
         log.info(RECEIVED_GET + ITEMS_PATH + "/" + id);
         return itemService.getItem(id);
+    }
+
+    @GetMapping()
+    public List<ItemDto> getUserItems(@RequestHeader(USER_HEADER) long userId) {
+        log.info(RECEIVED_GET + ITEMS_PATH + USER_HEADER + userId);
+        return itemService.getAllByUserId(userId);
+    }
+
+    @GetMapping(SEARCH_PATH)
+    public List<ItemDto> searchItems(@RequestHeader(USER_HEADER) long userId,
+                                     @RequestParam String text) {
+        log.info(RECEIVED_GET + ITEMS_PATH + SEARCH_PATH + USER_HEADER + userId);
+        return itemService.searchItemByText(text);
     }
 
 }
