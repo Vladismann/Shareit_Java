@@ -6,7 +6,6 @@ import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dto.UserMapper;
-import ru.practicum.shareit.user.repo.UserRepo;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,6 +29,7 @@ public class UserRepoImpl implements UserRepo {
         }
     }
 
+    @Override
     public void checkUserIsExist(long id) {
         if (!users.containsKey(id)) {
             log.info(INCORRECT_USER + id);

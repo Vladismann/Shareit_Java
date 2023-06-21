@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface UserRepo {
 
+    void checkUserIsExist(long id);
+
     UserDto create(User user);
 
     UserDto update(User user);

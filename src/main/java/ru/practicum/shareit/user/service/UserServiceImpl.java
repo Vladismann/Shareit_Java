@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
 
-    public void checkEmailIsNotBlank(User user) {
+    private void checkEmailIsNotBlank(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             throw new ValidationException(EMPTY_EMAIL);
         }

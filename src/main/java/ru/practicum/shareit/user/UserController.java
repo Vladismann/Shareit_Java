@@ -10,8 +10,8 @@ import ru.practicum.shareit.user.service.UserService;
 import javax.validation.Valid;
 import java.util.List;
 
+import static ru.practicum.shareit.common.CommonForControllers.BY_ID_PATH;
 import static ru.practicum.shareit.common.Messages.*;
-import static ru.practicum.shareit.user.UserPaths.BY_ID_PATH;
 import static ru.practicum.shareit.user.UserPaths.USERS_PATH;
 
 @RestController
