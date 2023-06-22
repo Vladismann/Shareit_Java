@@ -3,14 +3,10 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.ValidationException;
-import ru.practicum.shareit.user.repo.UserRepo;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repo.UserRepo;
 
 import java.util.List;
-
-import static ru.practicum.shareit.user.UserMessages.EMPTY_EMAIL;
 
 @Service
 @RequiredArgsConstructor
@@ -19,20 +15,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
 
-    private void checkEmailIsNotBlank(User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new ValidationException(EMPTY_EMAIL);
-        }
-    }
-
     @Override
-    public UserDto createUser(User user) {
-        checkEmailIsNotBlank(user);
+    public UserDto createUser(UserDto user) {
         return userRepo.create(user);
     }
 
     @Override
-    public UserDto updateUser(Long id, User user) {
+    public UserDto updateUser(Long id, UserDto user) {
         user.setId(id);
         return userRepo.update(user);
     }

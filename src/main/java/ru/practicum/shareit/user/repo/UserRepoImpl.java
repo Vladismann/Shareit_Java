@@ -4,28 +4,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.dto.UserMapper;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
-import static ru.practicum.shareit.user.dto.UserMapper.toUserDto;
 import static ru.practicum.shareit.user.UserMessages.*;
 
 @Repository
 @Slf4j
 public class UserRepoImpl implements UserRepo {
 
-    private final LinkedHashMap<Long, User> users = new LinkedHashMap<>();
+    private final LinkedHashMap<Long, UserDto> users = new LinkedHashMap<>();
+    private final Set<String> userEmails = new HashSet<>();
     private static long userId = 1;
 
-    public void checkEmailIsFree(User user) {
+    public void checkEmailIsFree(UserDto user) {
         String actualEmail = user.getEmail();
-        if (users.values().stream().anyMatch(actualUser -> actualUser.getEmail().equals(actualEmail))) {
+        if (userEmails.contains(actualEmail)) {
             log.info(INCORRECT_EMAIL + actualEmail);
             throw new IllegalArgumentException(INCORRECT_EMAIL + actualEmail);
+        } else {
+            userEmails.add(actualEmail);
         }
     }
 
@@ -38,21 +36,22 @@ public class UserRepoImpl implements UserRepo {
     }
 
     @Override
-    public UserDto create(User user) {
+    public UserDto create(UserDto user) {
         checkEmailIsFree(user);
         user.setId(userId++);
         users.put(user.getId(), user);
         log.info(CREATE_USER, user);
-        return toUserDto(user);
+        return user;
     }
 
     @Override
-    public UserDto update(User user) {
+    public UserDto update(UserDto user) {
         long id = user.getId();
         checkUserIsExist(id);
-        User actualUser = users.get(id);
+        UserDto actualUser = users.get(id);
         if (user.getEmail() != null && !user.getEmail().isBlank() && !actualUser.getEmail().equals(user.getEmail())) {
             checkEmailIsFree(user);
+            userEmails.remove(actualUser.getEmail());
             actualUser.setEmail(user.getEmail());
         }
         if (user.getName() != null && !user.getName().isBlank()) {
@@ -60,12 +59,13 @@ public class UserRepoImpl implements UserRepo {
         }
         users.put(id, actualUser);
         log.info(UPDATE_USER, actualUser);
-        return toUserDto(actualUser);
+        return actualUser;
     }
 
     @Override
     public void delete(long id) {
         checkUserIsExist(id);
+        userEmails.remove(users.get(id).getEmail());
         users.remove(id);
         log.info(DELETE_USER, id);
     }
@@ -74,12 +74,12 @@ public class UserRepoImpl implements UserRepo {
     public UserDto get(long id) {
         checkUserIsExist(id);
         log.info(GET_USER, id);
-        return toUserDto(users.get(id));
+        return users.get(id);
     }
 
     @Override
     public List<UserDto> getAll() {
         log.info(GET_USERS, users.values().size());
-        return users.values().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+        return new ArrayList<>(users.values());
     }
 }

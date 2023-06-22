@@ -21,6 +21,7 @@ import static ru.practicum.shareit.item.dto.ItemMapper.toItemDto;
 public class ItemRepoImpl implements ItemRepo {
 
     private final LinkedHashMap<Long, Item> items = new LinkedHashMap<>();
+    private final LinkedHashMap<Long, List<Item>> usersItems = new LinkedHashMap<>();
     private static long itemId = 1;
 
     private void checkItemIsExist(long id) {
@@ -43,6 +44,9 @@ public class ItemRepoImpl implements ItemRepo {
     public ItemDto create(Item item) {
         item.setId(itemId++);
         items.put(item.getId(), item);
+        List<Item> userItem = usersItems.getOrDefault(item.getOwner(), new ArrayList<>());
+        userItem.add(item);
+        usersItems.put(item.getOwner(), userItem);
         return toItemDto(item);
     }
 
@@ -52,6 +56,8 @@ public class ItemRepoImpl implements ItemRepo {
         checkItemIsExist(id);
         checkOwnerIsCorrect(item);
         Item actualItem = items.get(id);
+        List<Item> userItem = usersItems.getOrDefault(item.getOwner(), new ArrayList<>());
+        userItem.remove(actualItem);
         if (item.getName() != null && !item.getName().isBlank()) {
             actualItem.setName(item.getName());
         }
@@ -61,7 +67,8 @@ public class ItemRepoImpl implements ItemRepo {
         if (item.getAvailable() != null && item.getAvailable() != actualItem.getAvailable()) {
             actualItem.setAvailable(item.getAvailable());
         }
-        items.put(id, actualItem);
+        userItem.add(actualItem);
+        usersItems.put(item.getOwner(), userItem);
         return toItemDto(actualItem);
     }
 
@@ -73,7 +80,7 @@ public class ItemRepoImpl implements ItemRepo {
 
     @Override
     public List<ItemDto> getAllByUser(long userId) {
-        return items.values().stream().filter(item -> item.getOwner() == userId).map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return usersItems.get(userId).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     @Override
@@ -83,8 +90,8 @@ public class ItemRepoImpl implements ItemRepo {
         }
         String textForSearch = text.toLowerCase();
         return items.values().stream()
-                .filter(item -> (item.getName().toLowerCase().contains(textForSearch) || item.getDescription().toLowerCase().contains(textForSearch))
-                        && item.getAvailable())
+                .filter(item -> (item.getAvailable()
+                        && (item.getName().toLowerCase().contains(textForSearch) || item.getDescription().toLowerCase().contains(textForSearch))))
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
