@@ -3,7 +3,7 @@ package ru.practicum.shareit.item.repo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -17,8 +17,8 @@ import static ru.practicum.shareit.item.ItemMessages.INCORRECT_OWNER;
 @Slf4j
 public class ItemRepoImpl implements ItemRepo {
 
-    private final LinkedHashMap<Long, ItemDto> items = new LinkedHashMap<>();
-    private final LinkedHashMap<Long, List<ItemDto>> usersItems = new LinkedHashMap<>();
+    private final LinkedHashMap<Long, Item> items = new LinkedHashMap<>();
+    private final LinkedHashMap<Long, List<Item>> usersItems = new LinkedHashMap<>();
     private static long itemId = 1;
 
     private void checkItemIsExist(long id) {
@@ -28,7 +28,7 @@ public class ItemRepoImpl implements ItemRepo {
         }
     }
 
-    private void checkOwnerIsCorrect(ItemDto item) {
+    private void checkOwnerIsCorrect(Item item) {
         long id = item.getId();
         long ownerId = item.getOwner().getId();
         if (items.get(id).getOwner().getId() != ownerId) {
@@ -38,22 +38,22 @@ public class ItemRepoImpl implements ItemRepo {
     }
 
     @Override
-    public ItemDto create(ItemDto item) {
+    public Item create(Item item) {
         item.setId(itemId++);
         items.put(item.getId(), item);
-        List<ItemDto> userItem = usersItems.getOrDefault(item.getOwner().getId(), new ArrayList<>());
+        List<Item> userItem = usersItems.getOrDefault(item.getOwner().getId(), new ArrayList<>());
         userItem.add(item);
         usersItems.put(item.getOwner().getId(), userItem);
         return item;
     }
 
     @Override
-    public ItemDto update(ItemDto item) {
+    public Item update(Item item) {
         long id = item.getId();
         checkItemIsExist(id);
         checkOwnerIsCorrect(item);
-        ItemDto actualItem = items.get(id);
-        List<ItemDto> userItem = usersItems.getOrDefault(item.getOwner().getId(), new ArrayList<>());
+        Item actualItem = items.get(id);
+        List<Item> userItem = usersItems.getOrDefault(item.getOwner().getId(), new ArrayList<>());
         userItem.remove(actualItem);
         if (item.getName() != null && !item.getName().isBlank()) {
             actualItem.setName(item.getName());
@@ -70,18 +70,18 @@ public class ItemRepoImpl implements ItemRepo {
     }
 
     @Override
-    public ItemDto get(long id) {
+    public Item get(long id) {
         checkItemIsExist(id);
         return items.get(id);
     }
 
     @Override
-    public List<ItemDto> getAllByUser(long userId) {
+    public List<Item> getAllByUser(long userId) {
         return new ArrayList<>(usersItems.get(userId));
     }
 
     @Override
-    public List<ItemDto> search(String text) {
+    public List<Item> search(String text) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }

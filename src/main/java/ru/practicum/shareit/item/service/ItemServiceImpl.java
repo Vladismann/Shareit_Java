@@ -5,12 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repo.ItemRepo;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepo;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.item.ItemMessages.EMPTY_ITEM_SEARCH;
+import static ru.practicum.shareit.item.dto.ItemMapper.fromItemDto;
+import static ru.practicum.shareit.item.dto.ItemMapper.toItemDto;
 
 @Service
 @RequiredArgsConstructor
@@ -27,32 +33,34 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto createItem(long userId, ItemDto item) {
-        item.setOwner(userRepo.get(userId));
-        return itemRepo.create(item);
+    public ItemDto createItem(long userId, ItemDto itemDto) {
+        User owner = userRepo.get(userId);
+        Item item = fromItemDto(itemDto, owner);
+        return toItemDto(itemRepo.create(item));
     }
 
     @Override
-    public ItemDto updateItem(long userId, long itemId, ItemDto item) {
-        item.setOwner(userRepo.get(userId));
-        item.setId(itemId);
-        return itemRepo.update(item);
+    public ItemDto updateItem(long userId, long itemId, ItemDto itemDto) {
+        itemDto.setId(itemId);
+        User owner = userRepo.get(userId);
+        Item item = fromItemDto(itemDto, owner);
+        return toItemDto(itemRepo.update(item));
     }
 
     @Override
     public ItemDto getItem(long itemId) {
-        return itemRepo.get(itemId);
+        return toItemDto(itemRepo.get(itemId));
     }
 
     @Override
     public List<ItemDto> getAllByUserId(long userId) {
         userRepo.checkUserIsExist(userId);
-        return itemRepo.getAllByUser(userId);
+        return itemRepo.getAllByUser(userId).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     @Override
     public List<ItemDto> searchItemByText(String text) {
         validateSearchText(text);
-        return itemRepo.search(text);
+        return itemRepo.search(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 }

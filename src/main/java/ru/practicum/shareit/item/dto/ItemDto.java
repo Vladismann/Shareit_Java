@@ -1,9 +1,8 @@
 package ru.practicum.shareit.item.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -15,6 +14,7 @@ import static ru.practicum.shareit.item.ItemMessages.*;
  */
 @Data
 @Builder
+@AllArgsConstructor
 public class ItemDto {
 
     private long id;
@@ -24,6 +24,4 @@ public class ItemDto {
     private String description;
     @NotNull(message = EMPTY_ITEM_AVAILABILITY)
     private Boolean available;
-    @JsonIgnore
-    private UserDto owner;
 }

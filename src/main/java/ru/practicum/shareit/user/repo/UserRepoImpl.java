@@ -3,7 +3,7 @@ package ru.practicum.shareit.user.repo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
 
@@ -13,11 +13,11 @@ import static ru.practicum.shareit.user.UserMessages.*;
 @Slf4j
 public class UserRepoImpl implements UserRepo {
 
-    private final LinkedHashMap<Long, UserDto> users = new LinkedHashMap<>();
+    private final LinkedHashMap<Long, User> users = new LinkedHashMap<>();
     private final Set<String> userEmails = new HashSet<>();
     private static long userId = 1;
 
-    public void checkEmailIsFree(UserDto user) {
+    public void checkEmailIsFree(User user) {
         String actualEmail = user.getEmail();
         if (userEmails.contains(actualEmail)) {
             log.info(INCORRECT_EMAIL + actualEmail);
@@ -36,7 +36,7 @@ public class UserRepoImpl implements UserRepo {
     }
 
     @Override
-    public UserDto create(UserDto user) {
+    public User create(User user) {
         checkEmailIsFree(user);
         user.setId(userId++);
         users.put(user.getId(), user);
@@ -45,10 +45,10 @@ public class UserRepoImpl implements UserRepo {
     }
 
     @Override
-    public UserDto update(UserDto user) {
+    public User update(User user) {
         long id = user.getId();
         checkUserIsExist(id);
-        UserDto actualUser = users.get(id);
+        User actualUser = users.get(id);
         if (user.getEmail() != null && !user.getEmail().isBlank() && !actualUser.getEmail().equals(user.getEmail())) {
             checkEmailIsFree(user);
             userEmails.remove(actualUser.getEmail());
@@ -71,14 +71,14 @@ public class UserRepoImpl implements UserRepo {
     }
 
     @Override
-    public UserDto get(long id) {
+    public User get(long id) {
         checkUserIsExist(id);
         log.info(GET_USER, id);
         return users.get(id);
     }
 
     @Override
-    public List<UserDto> getAll() {
+    public List<User> getAll() {
         log.info(GET_USERS, users.values().size());
         return new ArrayList<>(users.values());
     }
