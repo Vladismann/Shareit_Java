@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.item.ItemMessages.EMPTY_ITEM_SEARCH;
-import static ru.practicum.shareit.item.dto.ItemMapper.fromItemDto;
-import static ru.practicum.shareit.item.dto.ItemMapper.toItemDto;
+
 
 @Service
 @RequiredArgsConstructor
@@ -35,21 +34,21 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto createItem(long userId, ItemDto itemDto) {
         User owner = userRepo.get(userId);
-        Item item = fromItemDto(itemDto, owner);
-        return toItemDto(itemRepo.create(item));
+        Item item = ItemMapper.fromItemDto(itemDto, owner);
+        return ItemMapper.toItemDto(itemRepo.create(item));
     }
 
     @Override
     public ItemDto updateItem(long userId, long itemId, ItemDto itemDto) {
         itemDto.setId(itemId);
         User owner = userRepo.get(userId);
-        Item item = fromItemDto(itemDto, owner);
-        return toItemDto(itemRepo.update(item));
+        Item item = ItemMapper.fromItemDto(itemDto, owner);
+        return ItemMapper.toItemDto(itemRepo.update(item));
     }
 
     @Override
     public ItemDto getItem(long itemId) {
-        return toItemDto(itemRepo.get(itemId));
+        return ItemMapper.toItemDto(itemRepo.get(itemId));
     }
 
     @Override

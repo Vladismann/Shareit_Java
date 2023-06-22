@@ -1,11 +1,13 @@
 package ru.practicum.shareit.item.dto;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+@UtilityClass
 public class ItemMapper {
 
-    public static ItemDto toItemDto(Item item) {
+    public ItemDto toItemDto(Item item) {
         return new ItemDto.ItemDtoBuilder()
                 .id(item.getId())
                 .name(item.getName())
@@ -14,7 +16,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public static Item fromItemDto(ItemDto itemDto, User owner) {
+    public Item fromItemDto(ItemDto itemDto, User owner) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())

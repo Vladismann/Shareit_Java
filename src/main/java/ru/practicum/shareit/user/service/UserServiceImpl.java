@@ -11,9 +11,6 @@ import ru.practicum.shareit.user.repo.UserRepo;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.user.dto.UserMapper.fromUserDto;
-import static ru.practicum.shareit.user.dto.UserMapper.toUserDto;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,15 +20,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        User user = fromUserDto(userDto);
-        return toUserDto(userRepo.create(user));
+        User user = UserMapper.fromUserDto(userDto);
+        return UserMapper.toUserDto(userRepo.create(user));
     }
 
     @Override
     public UserDto updateUser(Long id, UserDto userDto) {
         userDto.setId(id);
-        User user = fromUserDto(userDto);
-        return toUserDto(userRepo.update(user));
+        User user = UserMapper.fromUserDto(userDto);
+        return UserMapper.toUserDto(userRepo.update(user));
     }
 
     @Override
@@ -41,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(long id) {
-        return toUserDto(userRepo.get(id));
+        return UserMapper.toUserDto(userRepo.get(id));
     }
 
     @Override
