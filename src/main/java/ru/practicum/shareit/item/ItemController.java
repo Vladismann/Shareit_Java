@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -24,7 +23,7 @@ public class ItemController {
 
     @PostMapping()
     public ItemDto createItem(@RequestHeader(USER_HEADER) long userId,
-                              @Valid @RequestBody Item item) {
+                              @Valid @RequestBody ItemDto item) {
         log.info(RECEIVED_POST + ITEMS_PATH);
         return itemService.createItem(userId, item);
     }
@@ -32,7 +31,7 @@ public class ItemController {
     @PatchMapping(BY_ID_PATH)
     public ItemDto updateItem(@RequestHeader(USER_HEADER) long userId,
                               @PathVariable long id,
-                              @Valid @RequestBody Item item) {
+                              @RequestBody ItemDto item) {
         log.info(RECEIVED_PATCH + ITEMS_PATH + "/" + id);
         return itemService.updateItem(userId, id, item);
     }

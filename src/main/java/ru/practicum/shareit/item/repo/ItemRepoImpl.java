@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -14,14 +12,13 @@ import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.item.ItemMessages.INCORRECT_ITEM;
 import static ru.practicum.shareit.item.ItemMessages.INCORRECT_OWNER;
-import static ru.practicum.shareit.item.dto.ItemMapper.toItemDto;
 
 @Repository
 @Slf4j
 public class ItemRepoImpl implements ItemRepo {
 
-    private final LinkedHashMap<Long, Item> items = new LinkedHashMap<>();
-    private final LinkedHashMap<Long, List<Item>> usersItems = new LinkedHashMap<>();
+    private final LinkedHashMap<Long, ItemDto> items = new LinkedHashMap<>();
+    private final LinkedHashMap<Long, List<ItemDto>> usersItems = new LinkedHashMap<>();
     private static long itemId = 1;
 
     private void checkItemIsExist(long id) {
@@ -31,32 +28,32 @@ public class ItemRepoImpl implements ItemRepo {
         }
     }
 
-    private void checkOwnerIsCorrect(Item item) {
+    private void checkOwnerIsCorrect(ItemDto item) {
         long id = item.getId();
-        long ownerId = item.getOwner();
-        if (items.get(id).getOwner() != ownerId) {
+        long ownerId = item.getOwner().getId();
+        if (items.get(id).getOwner().getId() != ownerId) {
             log.info(INCORRECT_OWNER, id, ownerId);
             throw new NotFoundException(INCORRECT_ITEM + id);
         }
     }
 
     @Override
-    public ItemDto create(Item item) {
+    public ItemDto create(ItemDto item) {
         item.setId(itemId++);
         items.put(item.getId(), item);
-        List<Item> userItem = usersItems.getOrDefault(item.getOwner(), new ArrayList<>());
+        List<ItemDto> userItem = usersItems.getOrDefault(item.getOwner().getId(), new ArrayList<>());
         userItem.add(item);
-        usersItems.put(item.getOwner(), userItem);
-        return toItemDto(item);
+        usersItems.put(item.getOwner().getId(), userItem);
+        return item;
     }
 
     @Override
-    public ItemDto update(Item item) {
+    public ItemDto update(ItemDto item) {
         long id = item.getId();
         checkItemIsExist(id);
         checkOwnerIsCorrect(item);
-        Item actualItem = items.get(id);
-        List<Item> userItem = usersItems.getOrDefault(item.getOwner(), new ArrayList<>());
+        ItemDto actualItem = items.get(id);
+        List<ItemDto> userItem = usersItems.getOrDefault(item.getOwner().getId(), new ArrayList<>());
         userItem.remove(actualItem);
         if (item.getName() != null && !item.getName().isBlank()) {
             actualItem.setName(item.getName());
@@ -68,19 +65,19 @@ public class ItemRepoImpl implements ItemRepo {
             actualItem.setAvailable(item.getAvailable());
         }
         userItem.add(actualItem);
-        usersItems.put(item.getOwner(), userItem);
-        return toItemDto(actualItem);
+        usersItems.put(item.getOwner().getId(), userItem);
+        return actualItem;
     }
 
     @Override
     public ItemDto get(long id) {
         checkItemIsExist(id);
-        return toItemDto(items.get(id));
+        return items.get(id);
     }
 
     @Override
     public List<ItemDto> getAllByUser(long userId) {
-        return usersItems.get(userId).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return new ArrayList<>(usersItems.get(userId));
     }
 
     @Override
@@ -92,7 +89,6 @@ public class ItemRepoImpl implements ItemRepo {
         return items.values().stream()
                 .filter(item -> (item.getAvailable()
                         && (item.getName().toLowerCase().contains(textForSearch) || item.getDescription().toLowerCase().contains(textForSearch))))
-                .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 }
