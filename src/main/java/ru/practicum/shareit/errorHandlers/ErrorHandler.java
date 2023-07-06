@@ -35,13 +35,6 @@ public class ErrorHandler {
         return new ErrorResponse("Ошибка предоставляемых данных", e.getMessage());
     }
 
-    @ExceptionHandler({Throwable.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleNotFound(final Throwable e) {
-        log.info(e.getMessage());
-        return new ErrorResponse("Произошла ошибка", e.getMessage());
-    }
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException e) {
@@ -54,5 +47,12 @@ public class ErrorHandler {
     public ErrorResponse handleNotFound(final NotFoundException e) {
         log.info(e.getMessage());
         return new ErrorResponse("Объект не найден", e.getMessage());
+    }
+
+    @ExceptionHandler({RuntimeException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleNotFound(final RuntimeException e) {
+        log.info(e.getMessage());
+        return new ErrorResponse("Произошла ошибка", e.getMessage());
     }
 }

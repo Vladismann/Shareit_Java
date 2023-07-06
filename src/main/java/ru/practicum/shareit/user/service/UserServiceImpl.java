@@ -11,9 +11,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepo;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.user.UserMessages.INCORRECT_EMAIL;
 import static ru.practicum.shareit.user.UserMessages.INCORRECT_USER;
 
 @Service
@@ -29,13 +27,6 @@ public class UserServiceImpl implements UserService {
             log.info(INCORRECT_USER + id);
             return new NotFoundException(INCORRECT_USER + id);
         });
-    }
-
-    private void checkEmailIsFree(String email) {
-        if (userRepo.existsByEmail(email)) {
-            log.info(INCORRECT_EMAIL + email);
-            throw new IllegalArgumentException(INCORRECT_EMAIL + email);
-        }
     }
 
     @Override
@@ -63,6 +54,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userRepo.findAll().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+        return UserMapper.listUserToUserDto(userRepo.findAll());
     }
 }
