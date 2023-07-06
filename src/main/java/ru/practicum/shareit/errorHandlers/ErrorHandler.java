@@ -53,6 +53,6 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleNotFound(final RuntimeException e) {
         log.info(e.getMessage());
-        return new ErrorResponse("Произошла ошибка", e.getMessage());
+        return new ErrorResponse("Произошла ошибка", "Проверьте отправляемых корректность данных.");
     }
 }
