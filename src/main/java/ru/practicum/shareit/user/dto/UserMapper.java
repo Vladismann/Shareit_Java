@@ -12,4 +12,14 @@ public class UserMapper {
     public User fromUserDto(UserDto user) {
         return new User(user.getId(), user.getName(), user.getEmail());
     }
+
+    public User updateUserFromUserDto(User actualUser, UserDto newUser) {
+        if (newUser.getEmail() != null && !newUser.getEmail().isBlank() && !actualUser.getEmail().equals(newUser.getEmail())) {
+            actualUser.setEmail(newUser.getEmail());
+        }
+        if (newUser.getName() != null && !newUser.getName().isBlank()) {
+            actualUser.setName(newUser.getName());
+        }
+        return actualUser;
+    }
 }

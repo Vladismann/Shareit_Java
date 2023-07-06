@@ -1,6 +1,7 @@
 package ru.practicum.shareit.errorHandlers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +23,14 @@ public class ErrorHandler {
     @ExceptionHandler({IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleValidation(final IllegalArgumentException e) {
+        log.info(e.getMessage());
+        return new ErrorResponse("Ошибка предоставляемых данных", e.getMessage());
+    }
+
+    //Почему-то это исключение не обрабатывается хендлером, в чем может быть причина? Класс взял из консоли
+    @ExceptionHandler({ConstraintViolationException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleConflict(final ConstraintViolationException e) {
         log.info(e.getMessage());
         return new ErrorResponse("Ошибка предоставляемых данных", e.getMessage());
     }

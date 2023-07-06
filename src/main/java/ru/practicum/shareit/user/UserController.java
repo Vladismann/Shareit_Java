@@ -39,7 +39,7 @@ public class UserController {
     @GetMapping(BY_ID_PATH)
     public UserDto getUser(@PathVariable long id) {
         log.info(RECEIVED_GET + USERS_PATH + "/" + id);
-        return userService.getUser(id);
+        return userService.getUserDtoById(id);
     }
 
     @DeleteMapping(BY_ID_PATH)

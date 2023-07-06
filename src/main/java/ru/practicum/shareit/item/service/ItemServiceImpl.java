@@ -1,3 +1,4 @@
+/*
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(long userId, ItemDto itemDto) {
-        User owner = userRepo.get(userId);
+        User owner = userRepo.getReferenceById(userId);
         Item item = ItemMapper.fromItemDto(itemDto, owner);
         return ItemMapper.toItemDto(itemRepo.create(item));
     }
@@ -41,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto updateItem(long userId, long itemId, ItemDto itemDto) {
         itemDto.setId(itemId);
-        User owner = userRepo.get(userId);
+        User owner = userRepo.getReferenceById(userId);
         Item item = ItemMapper.fromItemDto(itemDto, owner);
         return ItemMapper.toItemDto(itemRepo.update(item));
     }
@@ -53,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAllByUserId(long userId) {
-        userRepo.checkUserIsExist(userId);
+        userRepo.existsById(userId);
         return itemRepo.getAllByUser(userId).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
@@ -62,4 +63,4 @@ public class ItemServiceImpl implements ItemService {
         validateSearchText(text);
         return itemRepo.search(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
-}
+}*/
