@@ -1,3 +1,4 @@
+/*
 package ru.practicum.shareit.item.repo;
 
 import lombok.extern.slf4j.Slf4j;
@@ -91,4 +92,4 @@ public class ItemRepoImpl implements ItemRepo {
                         && (item.getName().toLowerCase().contains(textForSearch) || item.getDescription().toLowerCase().contains(textForSearch))))
                 .collect(Collectors.toList());
     }
-}
+}*/

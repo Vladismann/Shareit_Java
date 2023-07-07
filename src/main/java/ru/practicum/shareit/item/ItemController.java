@@ -1,4 +1,3 @@
-/*
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
@@ -57,4 +56,3 @@ public class ItemController {
     }
 
 }
-*/
