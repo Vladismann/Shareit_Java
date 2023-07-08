@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.common.CommonMethods;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -12,7 +12,7 @@ import ru.practicum.shareit.user.repo.UserRepo;
 
 import java.util.List;
 
-import static ru.practicum.shareit.user.UserMessages.INCORRECT_USER;
+import static ru.practicum.shareit.user.UserMessages.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,40 +22,43 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
 
-    private User getUserById(long id) {
-        return userRepo.findById(id).orElseThrow(() -> {
-            log.info(INCORRECT_USER + id);
-            return new NotFoundException(INCORRECT_USER + id);
-        });
-    }
-
     @Override
     public UserDto createUser(UserDto userDto) {
         User user = UserMapper.fromUserDto(userDto);
-        return UserMapper.toUserDto(userRepo.save(user));
+        UserDto createdUserDto = UserMapper.toUserDto(userRepo.save(user));
+        log.info(CREATE_USER, createdUserDto);
+        return createdUserDto;
     }
 
     @Override
     public UserDto updateUser(Long id, UserDto newUserDto) {
-        User actualUser = getUserById(id);
+        CommonMethods.checkResourceIsExists(id, userRepo);
+        User actualUser = userRepo.getReferenceById(id);
         actualUser = UserMapper.updateUserFromUserDto(actualUser, newUserDto);
-        return UserMapper.toUserDto(userRepo.save(actualUser));
+        UserDto updatedUserDto = UserMapper.toUserDto(userRepo.save(actualUser));
+        log.info(UPDATE_USER, updatedUserDto);
+        return updatedUserDto;
     }
 
     @Override
     public void deleteUser(long id) {
+        log.info(DELETE_USER, id);
         userRepo.deleteById(id);
     }
 
     @Transactional(readOnly = true)
     @Override
     public UserDto getUserDtoById(long id) {
-        return UserMapper.toUserDto(getUserById(id));
+        CommonMethods.checkResourceIsExists(id, userRepo);
+        log.info(GET_USER, id);
+        return UserMapper.toUserDto(userRepo.getReferenceById(id));
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<UserDto> getAllUsers() {
-        return UserMapper.listUserToUserDto(userRepo.findAll());
+        List<UserDto> users = UserMapper.listUserToUserDto(userRepo.findAll());
+        log.info(GET_USERS, users.size());
+        return users;
     }
 }

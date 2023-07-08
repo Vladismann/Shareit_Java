@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.common.CommonMethods;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -17,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static ru.practicum.shareit.item.ItemMessages.*;
-import static ru.practicum.shareit.user.UserMessages.INCORRECT_USER;
 
 
 @Service
@@ -35,32 +35,20 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    private void checkUserIsExists(long userId) {
-        if (!userRepo.existsById(userId)) {
-            log.info(INCORRECT_USER + userId);
-            throw new NotFoundException(INCORRECT_USER + userId);
-        }
-    }
-
-    private void checkItemIsExist(long itemId) {
-        if (!itemRepo.existsById(itemId)) {
-            log.info(INCORRECT_ITEM + itemId);
-            throw new NotFoundException(INCORRECT_ITEM + itemId);
-        }
-    }
-
     @Override
     public ItemDto createItem(long userId, ItemDto itemDto) {
-        checkUserIsExists(userId);
+        CommonMethods.checkResourceIsExists(userId, userRepo);
         User owner = userRepo.getReferenceById(userId);
         Item item = ItemMapper.fromItemDto(itemDto, owner);
-        return ItemMapper.toItemDto(itemRepo.save(item));
+        ItemDto newItemDto = ItemMapper.toItemDto(itemRepo.save(item));
+        log.info(CREATE_ITEM, newItemDto);
+        return newItemDto;
     }
 
     @Override
     public ItemDto updateItem(long userId, long itemId, ItemDto itemDto) {
-        checkUserIsExists(userId);
-        checkItemIsExist(itemId);
+        CommonMethods.checkResourceIsExists(userId, userRepo);
+        CommonMethods.checkResourceIsExists(itemId, itemRepo);
         itemDto.setId(itemId);
         Item atualItem = itemRepo.getReferenceById(itemId);
         if (atualItem.getOwner().getId() != userId) {
@@ -68,30 +56,36 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException(INCORRECT_ITEM + itemId);
         }
         atualItem = ItemMapper.updateItemFromItemDto(atualItem, itemDto);
-        return ItemMapper.toItemDto(itemRepo.save(atualItem));
+        ItemDto newItemDto = ItemMapper.toItemDto(itemRepo.save(atualItem));
+        log.info(UPDATE_ITEM, newItemDto);
+        return newItemDto;
     }
 
     @Transactional(readOnly = true)
     @Override
     public ItemDto getItem(long itemId) {
-        checkItemIsExist(itemId);
+        CommonMethods.checkResourceIsExists(itemId, itemRepo);
+        log.info(GET_ITEM, itemId);
         return ItemMapper.toItemDto(itemRepo.getReferenceById(itemId));
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<ItemDto> getAllByUserId(long userId) {
-        checkUserIsExists(userId);
+        CommonMethods.checkResourceIsExists(userId, userRepo);
+        log.info(GET_ITEMS, userId);
         return ItemMapper.itemsListToItemDto(itemRepo.findByOwnerId(userId));
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<ItemDto> searchItemByText(String text) {
+        validateSearchText(text);
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        validateSearchText(text);
-        return ItemMapper.itemsListToItemDto(itemRepo.search(text));
+        List<ItemDto> foundItems = ItemMapper.itemsListToItemDto(itemRepo.search(text));
+        log.info(GET_ITEMS, foundItems.size());
+        return foundItems;
     }
 }
