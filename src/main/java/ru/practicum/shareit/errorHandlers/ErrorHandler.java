@@ -1,7 +1,7 @@
 package ru.practicum.shareit.errorHandlers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
+
+import static ru.practicum.shareit.common.Messages.INCORRECT_DATA;
 
 @RestControllerAdvice
 @Slf4j
@@ -27,12 +29,11 @@ public class ErrorHandler {
         return new ErrorResponse("Ошибка предоставляемых данных", e.getMessage());
     }
 
-    //Почему-то это исключение не обрабатывается хендлером, в чем может быть причина? Класс взял из консоли
-    @ExceptionHandler({ConstraintViolationException.class})
+    @ExceptionHandler({DataIntegrityViolationException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleConflict(final ConstraintViolationException e) {
+    public ErrorResponse handleConflict(final DataIntegrityViolationException e) {
         log.info(e.getMessage());
-        return new ErrorResponse("Ошибка предоставляемых данных", e.getMessage());
+        return new ErrorResponse("Ошибка предоставляемых данных", INCORRECT_DATA);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -53,6 +54,6 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleNotFound(final RuntimeException e) {
         log.info(e.getMessage());
-        return new ErrorResponse("Произошла ошибка", "Проверьте корректность отправляемых данных.");
+        return new ErrorResponse("Произошла ошибка", INCORRECT_DATA);
     }
 }

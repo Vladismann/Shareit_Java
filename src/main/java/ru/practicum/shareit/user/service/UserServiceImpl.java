@@ -47,11 +47,13 @@ public class UserServiceImpl implements UserService {
         userRepo.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDto getUserDtoById(long id) {
         return UserMapper.toUserDto(getUserById(id));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<UserDto> getAllUsers() {
         return UserMapper.listUserToUserDto(userRepo.findAll());

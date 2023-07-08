@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -22,6 +23,7 @@ import static ru.practicum.shareit.user.UserMessages.INCORRECT_USER;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepo itemRepo;
@@ -69,18 +71,21 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toItemDto(itemRepo.save(atualItem));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ItemDto getItem(long itemId) {
         checkItemIsExist(itemId);
         return ItemMapper.toItemDto(itemRepo.getReferenceById(itemId));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ItemDto> getAllByUserId(long userId) {
         checkUserIsExists(userId);
         return ItemMapper.itemsListToItemDto(itemRepo.findByOwnerId(userId));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ItemDto> searchItemByText(String text) {
         if (text.isBlank()) {
