@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.StateValidationException;
 import ru.practicum.shareit.exceptions.ValidationException;
 
 import static ru.practicum.shareit.common.Messages.INCORRECT_DATA;
@@ -20,6 +21,13 @@ public class ErrorHandler {
     public ErrorResponse handleValidation(final ValidationException e) {
         log.info(e.getMessage());
         return new ErrorResponse("Ошибка валидации", e.getMessage());
+    }
+
+    @ExceptionHandler({StateValidationException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidation(final StateValidationException e) {
+        log.info(e.getMessage());
+        return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
