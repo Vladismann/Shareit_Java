@@ -27,7 +27,7 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     private User owner;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     @ToString.Exclude
     private List<Booking> bookings;

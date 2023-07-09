@@ -25,13 +25,13 @@ public class ItemMapper {
     }
 
     public GetItemBookingDto bookingToGetItemBookingDto(Booking booking) {
-        if (booking.getId() != 0) {
+        if (booking != null && booking.getId() != 0) {
             return GetItemBookingDto.builder()
                     .id(booking.getId())
-                    .bookerId(booking.getId())
+                    .bookerId(booking.getBooker().getId())
                     .build();
         } else {
-            return new GetItemBookingDto();
+            return null;
         }
     }
 
@@ -47,7 +47,7 @@ public class ItemMapper {
                     .orElse(null);
             nextBooking = bookings.stream()
                     .filter(booking -> booking.getStart().isAfter(currentTime) && booking.getStatus().equals(APPROVED))
-                    .findFirst()
+                    .reduce((first, second) -> second)
                     .orElse(null);
         }
 
