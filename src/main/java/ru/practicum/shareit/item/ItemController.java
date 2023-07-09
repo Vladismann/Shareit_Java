@@ -37,9 +37,10 @@ public class ItemController {
     }
 
     @GetMapping(BY_ID_PATH)
-    public ItemDto getItem(@PathVariable long id) {
+    public ItemDto getItem(@RequestHeader(USER_HEADER) long userId,
+                           @PathVariable long id) {
         log.info(RECEIVED_GET + ITEMS_PATH + "/" + id);
-        return itemService.getItem(id);
+        return itemService.getItem(userId, id);
     }
 
     @GetMapping()

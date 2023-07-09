@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.repo.BookingRepo;
 import ru.practicum.shareit.common.CommonMethods;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
@@ -28,6 +30,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepo itemRepo;
     private final UserRepo userRepo;
+    private final BookingRepo bookingRepo;
 
     private void validateSearchText(String text) {
         if (text == null) {
@@ -63,10 +66,17 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public ItemDto getItem(long itemId) {
+    public ItemDto getItem(long userId, long itemId) {
+        CommonMethods.checkResourceIsExists(userId, userRepo);
         CommonMethods.checkResourceIsExists(itemId, itemRepo);
         log.info(GET_ITEM, itemId);
-        return ItemMapper.toItemDto(itemRepo.getReferenceById(itemId));
+        Item item = itemRepo.getReferenceById(itemId);
+        if (userId != item.getOwner().getId()) {
+            return ItemMapper.toItemDto(item);
+        } else {
+            List<Booking> itemBookings = bookingRepo.findByItemId(itemId);
+            return ItemMapper.toItemDtoForOwner(item, itemBookings);
+        }
     }
 
     @Transactional(readOnly = true)

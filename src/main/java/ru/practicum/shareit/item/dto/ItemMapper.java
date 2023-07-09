@@ -1,11 +1,16 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.experimental.UtilityClass;
+import ru.practicum.shareit.booking.dto.GetItemBookingDto;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.practicum.shareit.booking.model.BookingStatus.APPROVED;
 
 @UtilityClass
 public class ItemMapper {
@@ -16,6 +21,42 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .build();
+    }
+
+    public GetItemBookingDto bookingToGetItemBookingDto(Booking booking) {
+        if (booking.getId() != 0) {
+            return GetItemBookingDto.builder()
+                    .id(booking.getId())
+                    .bookerId(booking.getId())
+                    .build();
+        } else {
+            return new GetItemBookingDto();
+        }
+    }
+
+    public ItemDto toItemDtoForOwner(Item item, List<Booking> bookings) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        Booking lastBooking = new Booking();
+        Booking nextBooking = new Booking();
+        if (!bookings.isEmpty()) {
+            lastBooking = bookings.stream()
+                    .filter(booking -> booking.getStart().isBefore(currentTime) && booking.getStatus().equals(APPROVED))
+                    .findFirst()
+                    .orElse(null);
+            nextBooking = bookings.stream()
+                    .filter(booking -> booking.getStart().isAfter(currentTime) && booking.getStatus().equals(APPROVED))
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        return new ItemDto.ItemDtoBuilder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .lastBooking(bookingToGetItemBookingDto(lastBooking))
+                .nextBooking(bookingToGetItemBookingDto(nextBooking))
                 .build();
     }
 
