@@ -15,11 +15,11 @@ import static ru.practicum.shareit.booking.BookingMessages.*;
 public class BookingDto {
 
     @NotNull(message = EMPTY_BOOKING_ITEM)
-    long itemId;
+    private long itemId;
     @NotNull(message = EMPTY_BOOKING_DATE)
     @FutureOrPresent(message = INCORRECT_BOOKING_DATE)
-    LocalDateTime start;
+    private LocalDateTime start;
     @NotNull(message = EMPTY_BOOKING_DATE)
     @Future(message = INCORRECT_BOOKING_DATE)
-    LocalDateTime end;
+    private LocalDateTime end;
 }
