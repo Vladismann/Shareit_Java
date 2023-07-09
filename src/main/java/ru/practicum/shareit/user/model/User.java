@@ -17,8 +17,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
-    // "CONSTRAINT uq_email UNIQUE (email)" не работал, поэтому указываю ограничение в аннотации.
-    // В чем может быть причина, что не срабатывает UNIQUE на уровне создания таблицы?
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 }

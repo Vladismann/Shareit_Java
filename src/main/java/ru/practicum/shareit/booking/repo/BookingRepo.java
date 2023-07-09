@@ -59,9 +59,4 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
             "and b.status = ?2 " +
             "order by b.start desc")
     List<Booking> findAllByStatusByOwner(long id, BookingStatus status);
-
-    List<Booking> findByItemId(long id);
-
-    List<Booking> findByItemIdIn(List<Long> id);
-
 }

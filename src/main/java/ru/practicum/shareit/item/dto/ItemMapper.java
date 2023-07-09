@@ -35,10 +35,11 @@ public class ItemMapper {
         }
     }
 
-    public ItemDto toItemDtoForOwner(Item item, List<Booking> bookings) {
+    public ItemDto toItemDtoForOwner(Item item) {
         LocalDateTime currentTime = LocalDateTime.now();
         Booking lastBooking = new Booking();
         Booking nextBooking = new Booking();
+        List<Booking> bookings = item.getBookings();
         if (!bookings.isEmpty()) {
             lastBooking = bookings.stream()
                     .filter(booking -> booking.getStart().isBefore(currentTime) && booking.getStatus().equals(APPROVED))
@@ -58,6 +59,10 @@ public class ItemMapper {
                 .lastBooking(bookingToGetItemBookingDto(lastBooking))
                 .nextBooking(bookingToGetItemBookingDto(nextBooking))
                 .build();
+    }
+
+    public List<ItemDto> toItemDtoForOwnerList(List<Item> items) {
+        return items.stream().map(ItemMapper::toItemDtoForOwner).collect(Collectors.toList());
     }
 
     public Item fromItemDto(ItemDto itemDto, User owner) {
