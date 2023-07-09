@@ -50,6 +50,9 @@ public class BookingServiceImpl implements BookingService {
         if (bookingDto.getEnd().isBefore(bookingDto.getStart()) || bookingDto.getEnd().equals(bookingDto.getStart())) {
             throw new ValidationException(INCORRECT_BOOKING_DATE);
         }
+        if (item.getOwner().getId() == userId) {
+            throw new NotFoundException(INCORRECT_RESOURCE + itemId);
+        }
         User booker = userRepo.getReferenceById(userId);
         Booking booking = BookingMapper.fromBookingDto(bookingDto, item, booker, WAITING);
         GetBookingDto newBooking = BookingMapper.toGetBookingDto(bookingRepo.save(booking));
@@ -64,6 +67,8 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepo.getReferenceById(bookingId);
         if (booking.getItem().getOwner().getId() != userId) {
             throw new NotFoundException(INCORRECT_RESOURCE + bookingId);
+        } else if (booking.getStatus().equals(APPROVED)) {
+            throw new ValidationException(ALREADY_APPROVED);
         }
         if (approved) {
             booking.setStatus(APPROVED);

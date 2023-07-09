@@ -31,8 +31,8 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
             "from Booking b " +
             "join b.item i " +
             "where i.owner.id = ?1 " +
-            "and b.start <= ?2" +
-            "and b.end <= ?2" +
+            "and b.start <= ?2 " +
+            "and b.end <= ?2 " +
             "order by b.start desc")
     List<Booking> findAllCurrentByOwner(long id, LocalDateTime currentDate);
 
@@ -40,7 +40,7 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
             "from Booking b " +
             "join b.item i " +
             "where i.owner.id = ?1 " +
-            "and b.end < ?2" +
+            "and b.end < ?2 " +
             "order by b.start desc")
     List<Booking> findAllPastByOwner(long id, LocalDateTime currentDate);
 
@@ -48,7 +48,7 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
             "from Booking b " +
             "join b.item i " +
             "where i.owner.id = ?1 " +
-            "and b.start > ?2" +
+            "and b.start > ?2 " +
             "order by b.start desc")
     List<Booking> findAllFutureByOwner(long id, LocalDateTime currentDate);
 
@@ -56,7 +56,7 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
             "from Booking b " +
             "join b.item i " +
             "where i.owner.id = ?1 " +
-            "and b.status = ?2" +
+            "and b.status = ?2 " +
             "order by b.start desc")
     List<Booking> findAllByStatusByOwner(long id, BookingStatus status);
 
