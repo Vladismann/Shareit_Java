@@ -65,7 +65,7 @@ public class ItemMapper {
         if (!bookings.isEmpty()) {
             lastBooking = bookings.stream()
                     .filter(booking -> booking.getStart().isBefore(currentTime) && booking.getStatus().equals(APPROVED))
-                    .findFirst()
+                    .reduce((first, second) -> second)
                     .orElse(null);
             nextBooking = bookings.stream()
                     .filter(booking -> booking.getStart().isAfter(currentTime) && booking.getStatus().equals(APPROVED))
