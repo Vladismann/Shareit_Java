@@ -3,11 +3,14 @@ package ru.practicum.shareit.item.dto;
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.dto.GetItemBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.booking.model.BookingStatus.APPROVED;
@@ -16,11 +19,13 @@ import static ru.practicum.shareit.booking.model.BookingStatus.APPROVED;
 public class ItemMapper {
 
     public ItemDto toItemDto(Item item) {
+        Set<Comment> comments = item.getComments();
         return new ItemDto.ItemDtoBuilder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .comments(commentsToCommentsDtoList(comments))
                 .build();
     }
 
@@ -32,6 +37,23 @@ public class ItemMapper {
                     .build();
         } else {
             return null;
+        }
+    }
+
+    public CommentDto commentToCommentDto(Comment comment) {
+        return CommentDto.builder()
+                .id(comment.getId())
+                .text(comment.getText())
+                .authorName(comment.getAuthor().getName())
+                .created(comment.getCreated())
+                .build();
+    }
+
+    public Set<CommentDto> commentsToCommentsDtoList(Set<Comment> comments) {
+        if (comments != null) {
+            return comments.stream().map(ItemMapper::commentToCommentDto).collect(Collectors.toSet());
+        } else {
+            return new HashSet<>();
         }
     }
 
@@ -50,6 +72,7 @@ public class ItemMapper {
                     .reduce((first, second) -> second)
                     .orElse(null);
         }
+        Set<Comment> comments = item.getComments();
 
         return new ItemDto.ItemDtoBuilder()
                 .id(item.getId())
@@ -58,6 +81,16 @@ public class ItemMapper {
                 .available(item.getAvailable())
                 .lastBooking(bookingToGetItemBookingDto(lastBooking))
                 .nextBooking(bookingToGetItemBookingDto(nextBooking))
+                .comments(commentsToCommentsDtoList(comments))
+                .build();
+    }
+
+    public Comment createComment(CreateCommentDto commentDto, Item item, User author) {
+        return Comment.builder()
+                .text(commentDto.getText())
+                .item(item)
+                .author(author)
+                .created(LocalDateTime.now())
                 .build();
     }
 

@@ -7,16 +7,22 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.common.CommonMethods;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repo.CommentRepo;
 import ru.practicum.shareit.item.repo.ItemRepo;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepo;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import static ru.practicum.shareit.booking.model.BookingStatus.APPROVED;
 import static ru.practicum.shareit.item.ItemMessages.*;
 
 
@@ -28,6 +34,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepo itemRepo;
     private final UserRepo userRepo;
+    private final CommentRepo commentRepo;
 
     private void validateSearchText(String text) {
         if (text == null) {
@@ -93,5 +100,22 @@ public class ItemServiceImpl implements ItemService {
         List<ItemDto> foundItems = ItemMapper.itemsListToItemDto(itemRepo.search(text));
         log.info(GET_ITEMS, foundItems.size());
         return foundItems;
+    }
+
+    @Override
+    public CommentDto addComment(long userId, long itemId, CreateCommentDto commentDto) {
+        CommonMethods.checkResourceIsExists(userId, userRepo);
+        CommonMethods.checkResourceIsExists(itemId, itemRepo);
+        Item actualItem = itemRepo.getReferenceById(itemId);
+        if (actualItem.getBookings().stream()
+                .noneMatch(booking
+                        -> booking.getBooker().getId() == userId
+                        && booking.getStatus().equals(APPROVED)
+                        && booking.getEnd().isBefore(LocalDateTime.now()))) {
+            throw new ValidationException(NO_BOOKING_COMMENT);
+        }
+        User author = userRepo.getReferenceById(userId);
+        Comment comment = ItemMapper.createComment(commentDto, actualItem, author);
+        return ItemMapper.commentToCommentDto(commentRepo.save(comment));
     }
 }
