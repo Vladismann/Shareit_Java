@@ -25,32 +25,32 @@ public class UserController {
 
     @PostMapping()
     public UserDto createUser(@Validated({CreateGroup.class}) @RequestBody UserDto user) {
-        log.info(RECEIVED_POST + USERS_PATH);
+        log.info(RECEIVED_POST, USERS_PATH);
         return userService.createUser(user);
     }
 
     @PatchMapping(BY_ID_PATH)
     public UserDto updateUser(@PathVariable long id,
                               @Validated({UpdateGroup.class}) @RequestBody UserDto user) {
-        log.info(RECEIVED_PATCH + USERS_PATH + "/" + id);
+        log.info(RECEIVED_PATCH, USERS_PATH, id);
         return userService.updateUser(id, user);
     }
 
     @GetMapping(BY_ID_PATH)
     public UserDto getUser(@PathVariable long id) {
-        log.info(RECEIVED_GET + USERS_PATH + "/" + id);
+        log.info(RECEIVED_GET, USERS_PATH, id);
         return userService.getUserDtoById(id);
     }
 
     @DeleteMapping(BY_ID_PATH)
     public void deleteUser(@PathVariable long id) {
-        log.info(RECEIVED_DELETE + USERS_PATH + "/" + id);
+        log.info(RECEIVED_DELETE, USERS_PATH, id);
         userService.deleteUser(id);
     }
 
     @GetMapping()
     public List<UserDto> getAllUsers() {
-        log.info(RECEIVED_GET + USERS_PATH);
+        log.info(RECEIVED_GET, USERS_PATH);
         return userService.getAllUsers();
     }
 }

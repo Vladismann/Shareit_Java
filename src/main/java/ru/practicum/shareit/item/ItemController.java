@@ -27,7 +27,7 @@ public class ItemController {
     @PostMapping()
     public ItemDto createItem(@RequestHeader(USER_HEADER) long userId,
                               @Valid @RequestBody ItemDto item) {
-        log.info(RECEIVED_POST + ITEMS_PATH);
+        log.info(RECEIVED_POST, ITEMS_PATH);
         return itemService.createItem(userId, item);
     }
 
@@ -35,27 +35,27 @@ public class ItemController {
     public ItemDto updateItem(@RequestHeader(USER_HEADER) long userId,
                               @PathVariable long id,
                               @RequestBody ItemDto item) {
-        log.info(RECEIVED_PATCH + ITEMS_PATH + "/" + id);
+        log.info(RECEIVED_PATCH, ITEMS_PATH, id);
         return itemService.updateItem(userId, id, item);
     }
 
     @GetMapping(BY_ID_PATH)
     public ItemDto getItem(@RequestHeader(USER_HEADER) long userId,
                            @PathVariable long id) {
-        log.info(RECEIVED_GET + ITEMS_PATH + "/" + id);
+        log.info(RECEIVED_GET, ITEMS_PATH, id);
         return itemService.getItem(userId, id);
     }
 
     @GetMapping()
     public List<ItemDto> getUserItems(@RequestHeader(USER_HEADER) long userId) {
-        log.info(RECEIVED_GET + ITEMS_PATH + USER_HEADER + userId);
+        log.info(RECEIVED_GET, ITEMS_PATH, USER_HEADER + userId);
         return itemService.getAllByUserId(userId);
     }
 
     @GetMapping(SEARCH_PATH)
     public List<ItemDto> searchItems(@RequestHeader(USER_HEADER) long userId,
                                      @RequestParam String text) {
-        log.info(RECEIVED_GET + ITEMS_PATH + SEARCH_PATH + USER_HEADER + userId);
+        log.info(RECEIVED_GET, ITEMS_PATH, SEARCH_PATH + USER_HEADER + userId);
         return itemService.searchItemByText(text);
     }
 
@@ -63,7 +63,7 @@ public class ItemController {
     public CommentDto createComment(@RequestHeader(USER_HEADER) long userId,
                                     @PathVariable long id,
                                     @Valid @RequestBody CreateCommentDto comment) {
-        log.info(RECEIVED_POST + ITEMS_PATH);
+        log.info(RECEIVED_POST, ITEMS_PATH);
         return itemService.addComment(userId, id, comment);
     }
 

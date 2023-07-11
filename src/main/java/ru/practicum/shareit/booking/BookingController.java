@@ -27,7 +27,7 @@ public class BookingController {
     @PostMapping()
     public GetBookingDto createBooking(@RequestHeader(USER_HEADER) long userId,
                                        @Valid @RequestBody BookingDto bookingDto) {
-        log.info(RECEIVED_POST + BOOKINGS_PATH);
+        log.info(RECEIVED_POST, BOOKINGS_PATH);
         return bookingService.addBooking(userId, bookingDto);
     }
 
@@ -35,28 +35,28 @@ public class BookingController {
     public GetBookingDto approveBooking(@RequestHeader(USER_HEADER) long userId,
                                         @PathVariable long id,
                                         @RequestParam boolean approved) {
-        log.info(RECEIVED_PATCH + BOOKINGS_PATH + "/" + id);
+        log.info(RECEIVED_PATCH, BOOKINGS_PATH, id);
         return bookingService.approveBooking(userId, id, approved);
     }
 
     @GetMapping(BY_ID_PATH)
     public GetBookingDto getItem(@RequestHeader(USER_HEADER) long userId,
                                  @PathVariable long id) {
-        log.info(RECEIVED_GET + BOOKINGS_PATH + "/" + id);
+        log.info(RECEIVED_GET, BOOKINGS_PATH, id);
         return bookingService.getBooking(userId, id);
     }
 
     @GetMapping()
     public List<GetBookingDto> getAllByBooker(@RequestHeader(USER_HEADER) long userId,
                                               @RequestParam(defaultValue = "all") String state) {
-        log.info(RECEIVED_GET + BOOKINGS_PATH + USER_HEADER + userId);
+        log.info(RECEIVED_GET, BOOKINGS_PATH, USER_HEADER + userId);
         return bookingService.getAllBookingsByBooker(userId, state);
     }
 
     @GetMapping(OWNER_PATH)
     public List<GetBookingDto> getAllByOwner(@RequestHeader(USER_HEADER) long userId,
                                              @RequestParam(defaultValue = "all") String state) {
-        log.info(RECEIVED_GET + BOOKINGS_PATH + USER_HEADER + userId);
+        log.info(RECEIVED_GET, BOOKINGS_PATH, USER_HEADER + userId);
         return bookingService.getAllBookingsByOwner(userId, state);
     }
 }
