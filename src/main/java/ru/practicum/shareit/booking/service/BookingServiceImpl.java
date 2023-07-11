@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,14 +29,14 @@ import static ru.practicum.shareit.booking.model.BookingStatus.*;
 import static ru.practicum.shareit.common.Messages.INCORRECT_RESOURCE;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Transactional
 @Slf4j
 public class BookingServiceImpl implements BookingService {
 
-    UserRepo userRepo;
-    ItemRepo itemRepo;
-    BookingRepo bookingRepo;
+    private final UserRepo userRepo;
+    private final ItemRepo itemRepo;
+    private final BookingRepo bookingRepo;
 
     @Override
     public GetBookingDto addBooking(long userId, BookingDto bookingDto) {

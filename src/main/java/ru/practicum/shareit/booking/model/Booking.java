@@ -17,17 +17,17 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    private long id;
     @Column(name = "start_date")
-    LocalDateTime start;
+    private LocalDateTime start;
     @Column(name = "end_date")
-    LocalDateTime end;
+    private LocalDateTime end;
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
-    Item item;
+    private Item item;
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
-    User booker;
+    private User booker;
     @Enumerated(EnumType.STRING)
     BookingStatus status;
 }

@@ -1,12 +1,9 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "items", schema = "public")
@@ -28,13 +25,4 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     private User owner;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "item_id")
-    @ToString.Exclude
-    private List<Booking> bookings;
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "item_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Set<Comment> comments;
 }

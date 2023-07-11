@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.repo.BookingRepo;
 import ru.practicum.shareit.common.CommonMethods;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
@@ -19,8 +21,11 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepo;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.booking.model.BookingStatus.APPROVED;
 import static ru.practicum.shareit.item.ItemMessages.*;
@@ -35,6 +40,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepo itemRepo;
     private final UserRepo userRepo;
     private final CommentRepo commentRepo;
+    private final BookingRepo bookingRepo;
 
     private void validateSearchText(String text) {
         if (text == null) {
@@ -47,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
         CommonMethods.checkResourceIsExists(userId, userRepo);
         User owner = userRepo.getReferenceById(userId);
         Item item = ItemMapper.fromItemDto(itemDto, owner);
-        ItemDto newItemDto = ItemMapper.toItemDto(itemRepo.save(item));
+        ItemDto newItemDto = ItemMapper.saveItemDto(itemRepo.save(item));
         log.info(CREATE_ITEM, newItemDto);
         return newItemDto;
     }
@@ -63,7 +69,7 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException(INCORRECT_ITEM + itemId);
         }
         atualItem = ItemMapper.updateItemFromItemDto(atualItem, itemDto);
-        ItemDto newItemDto = ItemMapper.toItemDto(itemRepo.save(atualItem));
+        ItemDto newItemDto = ItemMapper.saveItemDto(itemRepo.save(atualItem));
         log.info(UPDATE_ITEM, newItemDto);
         return newItemDto;
     }
@@ -75,10 +81,12 @@ public class ItemServiceImpl implements ItemService {
         CommonMethods.checkResourceIsExists(itemId, itemRepo);
         log.info(GET_ITEM, itemId);
         Item item = itemRepo.getReferenceById(itemId);
+        List<Booking> bookings = bookingRepo.findAllByItemId(itemId);
+        Set<Comment> comments = commentRepo.findAllByItemId(itemId);
         if (userId != item.getOwner().getId()) {
-            return ItemMapper.toItemDto(item);
+            return ItemMapper.toItemDto(item, comments);
         } else {
-            return ItemMapper.toItemDtoForOwner(item);
+            return ItemMapper.toItemDtoForOwner(item, bookings, comments);
         }
     }
 
@@ -86,8 +94,16 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getAllByUserId(long userId) {
         CommonMethods.checkResourceIsExists(userId, userRepo);
+        List<Item> items = itemRepo.findByOwnerId(userId);
+        if (items.isEmpty()) {
+            log.info(GET_ITEMS, 0);
+            return new ArrayList<>();
+        }
+        List<Long> itemsIds = items.stream().map(Item::getId).collect(Collectors.toList());
+        List<Booking> bookings = bookingRepo.findAllByItemIdIn(itemsIds);
+        Set<Comment> comments = commentRepo.findAllByItemIdIn(itemsIds);
         log.info(GET_ITEMS, userId);
-        return ItemMapper.toItemDtoForOwnerList(itemRepo.findByOwnerId(userId));
+        return ItemMapper.toItemDtoForOwnerList(itemRepo.findByOwnerId(userId), bookings, comments);
     }
 
     @Transactional(readOnly = true)
@@ -97,7 +113,14 @@ public class ItemServiceImpl implements ItemService {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        List<ItemDto> foundItems = ItemMapper.itemsListToItemDto(itemRepo.search(text));
+        List<Item> items = itemRepo.search(text);
+        if (items.isEmpty()) {
+            log.info(GET_ITEMS, 0);
+            return new ArrayList<>();
+        }
+        List<Long> itemsIds = items.stream().map(Item::getId).collect(Collectors.toList());
+        Set<Comment> comments = commentRepo.findAllByItemIdIn(itemsIds);
+        List<ItemDto> foundItems = ItemMapper.itemsListToItemDto(items, comments);
         log.info(GET_ITEMS, foundItems.size());
         return foundItems;
     }
@@ -107,7 +130,8 @@ public class ItemServiceImpl implements ItemService {
         CommonMethods.checkResourceIsExists(userId, userRepo);
         CommonMethods.checkResourceIsExists(itemId, itemRepo);
         Item actualItem = itemRepo.getReferenceById(itemId);
-        if (actualItem.getBookings().stream()
+        List<Booking> bookings = bookingRepo.findAllByItemId(itemId);
+        if (bookings.stream()
                 .noneMatch(booking
                         -> booking.getBooker().getId() == userId
                         && booking.getStatus().equals(APPROVED)

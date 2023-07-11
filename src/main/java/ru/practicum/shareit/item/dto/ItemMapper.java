@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,8 +19,16 @@ import static ru.practicum.shareit.booking.model.BookingStatus.APPROVED;
 @UtilityClass
 public class ItemMapper {
 
-    public ItemDto toItemDto(Item item) {
-        Set<Comment> comments = item.getComments();
+    public ItemDto saveItemDto(Item item) {
+        return new ItemDto.ItemDtoBuilder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .build();
+    }
+
+    public ItemDto toItemDto(Item item, Set<Comment> comments) {
         return new ItemDto.ItemDtoBuilder()
                 .id(item.getId())
                 .name(item.getName())
@@ -57,11 +66,10 @@ public class ItemMapper {
         }
     }
 
-    public ItemDto toItemDtoForOwner(Item item) {
+    public ItemDto toItemDtoForOwner(Item item, List<Booking> bookings, Set<Comment> comments) {
         LocalDateTime currentTime = LocalDateTime.now();
         Booking lastBooking = new Booking();
         Booking nextBooking = new Booking();
-        List<Booking> bookings = item.getBookings();
         if (!bookings.isEmpty()) {
             lastBooking = bookings.stream()
                     .filter(booking -> booking.getStart().isBefore(currentTime) && booking.getStatus().equals(APPROVED))
@@ -72,7 +80,6 @@ public class ItemMapper {
                     .reduce((first, second) -> second)
                     .orElse(null);
         }
-        Set<Comment> comments = item.getComments();
 
         return new ItemDto.ItemDtoBuilder()
                 .id(item.getId())
@@ -94,8 +101,15 @@ public class ItemMapper {
                 .build();
     }
 
-    public List<ItemDto> toItemDtoForOwnerList(List<Item> items) {
-        return items.stream().map(ItemMapper::toItemDtoForOwner).collect(Collectors.toList());
+    public List<ItemDto> toItemDtoForOwnerList(List<Item> items, List<Booking> bookings, Set<Comment> comments) {
+        List<ItemDto> itemDtoList = new ArrayList<>();
+        for (Item item : items) {
+            List<Booking> itemBookings = bookings.stream().filter(booking -> item.getId() == booking.getItem().getId()).collect(Collectors.toList());
+            Set<Comment> itemComments = comments.stream().filter(comment -> item.getId() == comment.getItem().getId()).collect(Collectors.toSet());
+            ItemDto itemDto = toItemDtoForOwner(item, itemBookings, itemComments);
+            itemDtoList.add(itemDto);
+        }
+        return itemDtoList;
     }
 
     public Item fromItemDto(ItemDto itemDto, User owner) {
@@ -120,8 +134,14 @@ public class ItemMapper {
         return actualItem;
     }
 
-    public List<ItemDto> itemsListToItemDto(List<Item> items) {
-        return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+    public List<ItemDto> itemsListToItemDto(List<Item> items, Set<Comment> comments) {
+        List<ItemDto> itemDtoList = new ArrayList<>();
+        for (Item item : items) {
+            Set<Comment> itemComments = comments.stream().filter(comment -> item.getId() == comment.getItem().getId()).collect(Collectors.toSet());
+            ItemDto itemDto = toItemDto(item, itemComments);
+            itemDtoList.add(itemDto);
+        }
+        return itemDtoList;
     }
 
 }

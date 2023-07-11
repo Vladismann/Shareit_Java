@@ -58,9 +58,9 @@ public class ErrorHandler {
         return new ErrorResponse("Объект не найден", e.getMessage());
     }
 
-    @ExceptionHandler({RuntimeException.class})
+    @ExceptionHandler({Throwable.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleNotFound(final RuntimeException e) {
+    public ErrorResponse handleNotFound(final Throwable e) {
         log.info(e.getMessage());
         return new ErrorResponse("Произошла ошибка", INCORRECT_DATA);
     }
