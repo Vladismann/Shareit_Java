@@ -21,7 +21,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepo;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -97,7 +96,7 @@ public class ItemServiceImpl implements ItemService {
         List<Item> items = itemRepo.findByOwnerId(userId);
         if (items.isEmpty()) {
             log.info(GET_ITEMS, 0);
-            return new ArrayList<>();
+            return List.of();
         }
         List<Long> itemsIds = items.stream().map(Item::getId).collect(Collectors.toList());
         List<Booking> bookings = bookingRepo.findAllByItemIdIn(itemsIds);
@@ -116,7 +115,7 @@ public class ItemServiceImpl implements ItemService {
         List<Item> items = itemRepo.search(text);
         if (items.isEmpty()) {
             log.info(GET_ITEMS, 0);
-            return new ArrayList<>();
+            return List.of();
         }
         List<Long> itemsIds = items.stream().map(Item::getId).collect(Collectors.toList());
         Set<Comment> comments = commentRepo.findAllByItemIdIn(itemsIds);

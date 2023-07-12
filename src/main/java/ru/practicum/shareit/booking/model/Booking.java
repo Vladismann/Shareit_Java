@@ -29,5 +29,5 @@ public class Booking {
     @ToString.Exclude
     private User booker;
     @Enumerated(EnumType.STRING)
-    BookingStatus status;
+    private BookingStatus status;
 }

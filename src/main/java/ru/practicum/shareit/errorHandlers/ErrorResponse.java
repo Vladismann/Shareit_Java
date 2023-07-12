@@ -9,10 +9,9 @@ import lombok.Data;
 public class ErrorResponse {
     private final String error;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String message;
+    private String message;
 
     public ErrorResponse(String error) {
         this.error = error;
-        message = null;
     }
 }
