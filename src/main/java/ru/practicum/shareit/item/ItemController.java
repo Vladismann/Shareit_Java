@@ -3,6 +3,8 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -11,6 +13,7 @@ import java.util.List;
 
 import static ru.practicum.shareit.common.CommonForControllers.*;
 import static ru.practicum.shareit.common.Messages.*;
+import static ru.practicum.shareit.item.ItemPaths.COMMENT_PATH;
 import static ru.practicum.shareit.item.ItemPaths.ITEMS_PATH;
 
 @RestController
@@ -24,7 +27,7 @@ public class ItemController {
     @PostMapping()
     public ItemDto createItem(@RequestHeader(USER_HEADER) long userId,
                               @Valid @RequestBody ItemDto item) {
-        log.info(RECEIVED_POST + ITEMS_PATH);
+        log.info(RECEIVED_POST, ITEMS_PATH);
         return itemService.createItem(userId, item);
     }
 
@@ -32,27 +35,36 @@ public class ItemController {
     public ItemDto updateItem(@RequestHeader(USER_HEADER) long userId,
                               @PathVariable long id,
                               @RequestBody ItemDto item) {
-        log.info(RECEIVED_PATCH + ITEMS_PATH + "/" + id);
+        log.info(RECEIVED_PATCH, ITEMS_PATH, id);
         return itemService.updateItem(userId, id, item);
     }
 
     @GetMapping(BY_ID_PATH)
-    public ItemDto getItem(@PathVariable long id) {
-        log.info(RECEIVED_GET + ITEMS_PATH + "/" + id);
-        return itemService.getItem(id);
+    public ItemDto getItem(@RequestHeader(USER_HEADER) long userId,
+                           @PathVariable long id) {
+        log.info(RECEIVED_GET, ITEMS_PATH, id);
+        return itemService.getItem(userId, id);
     }
 
     @GetMapping()
     public List<ItemDto> getUserItems(@RequestHeader(USER_HEADER) long userId) {
-        log.info(RECEIVED_GET + ITEMS_PATH + USER_HEADER + userId);
+        log.info(RECEIVED_GET, ITEMS_PATH, USER_HEADER + userId);
         return itemService.getAllByUserId(userId);
     }
 
     @GetMapping(SEARCH_PATH)
     public List<ItemDto> searchItems(@RequestHeader(USER_HEADER) long userId,
                                      @RequestParam String text) {
-        log.info(RECEIVED_GET + ITEMS_PATH + SEARCH_PATH + USER_HEADER + userId);
+        log.info(RECEIVED_GET, ITEMS_PATH, SEARCH_PATH + USER_HEADER + userId);
         return itemService.searchItemByText(text);
+    }
+
+    @PostMapping(BY_ID_PATH + COMMENT_PATH)
+    public CommentDto createComment(@RequestHeader(USER_HEADER) long userId,
+                                    @PathVariable long id,
+                                    @Valid @RequestBody CreateCommentDto comment) {
+        log.info(RECEIVED_POST, ITEMS_PATH);
+        return itemService.addComment(userId, id, comment);
     }
 
 }
