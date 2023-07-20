@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,4 +27,6 @@ public class ItemDto {
     private GetItemBookingDto lastBooking;
     private GetItemBookingDto nextBooking;
     private Set<CommentDto> comments;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private long requestId;
 }
