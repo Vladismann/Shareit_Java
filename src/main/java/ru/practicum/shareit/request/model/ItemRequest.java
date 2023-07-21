@@ -24,5 +24,8 @@ public class ItemRequest {
     private String description;
 
     @Column(nullable = false)
+    private long requestor;
+
+    @Column(nullable = false)
     private LocalDateTime created;
 }

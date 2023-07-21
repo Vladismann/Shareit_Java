@@ -13,7 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ActualRequests {
+public class ActualRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

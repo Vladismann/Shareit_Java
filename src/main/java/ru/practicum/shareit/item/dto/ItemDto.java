@@ -28,5 +28,5 @@ public class ItemDto {
     private GetItemBookingDto nextBooking;
     private Set<CommentDto> comments;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private long requestId;
+    private Long requestId;
 }
