@@ -2,10 +2,10 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.common.CustomPageRequest;
 import ru.practicum.shareit.request.dto.AddItemRequestDto;
 import ru.practicum.shareit.request.dto.CreatedItemRequestDto;
 import ru.practicum.shareit.request.dto.GetItemRequestDto;
@@ -47,7 +47,7 @@ public class ItemRequestController {
                                                   @RequestParam(defaultValue = "0") int from,
                                                   @RequestParam(defaultValue = "10") int size) {
         log.info(RECEIVED_GET, ITEM_REQUEST_PATH, GET_ALL_ITEM_REQUEST_PATH);
-        Pageable paging = PageRequest.of(from, size, Sort.by("created"));
+        Pageable paging = new CustomPageRequest(from, size, Sort.by("created"));
         return itemRequestService.getAllRequests(userId, paging);
     }
 
