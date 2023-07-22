@@ -28,7 +28,7 @@ public class ItemRequestMapper {
                 .build();
     }
 
-    public GetItemRequestDto toListGetItemRequestDto(ItemRequest itemRequest, List<GetItemRequestItemDto> getItemRequestItemDto) {
+    public GetItemRequestDto toGetItemRequestDto(ItemRequest itemRequest, List<GetItemRequestItemDto> getItemRequestItemDto) {
         if (getItemRequestItemDto == null) {
             getItemRequestItemDto = new ArrayList<>();
         }
@@ -40,12 +40,12 @@ public class ItemRequestMapper {
                 .build();
     }
 
-    public List<GetItemRequestDto> toListGetItemRequestDto(List<ItemRequest> itemRequests, List<GetItemRequestItemDto> getItemRequestItemDto) {
+    public List<GetItemRequestDto> toGetItemRequestDto(List<ItemRequest> itemRequests, List<GetItemRequestItemDto> getItemRequestItemDto) {
         List<GetItemRequestDto> getItemRequestDto = new ArrayList<>();
         for (ItemRequest itemRequest: itemRequests) {
             List<GetItemRequestItemDto> itemsForActualRequest = getItemRequestItemDto.stream()
                     .filter(item -> item.getRequestId() == itemRequest.getId()).collect(Collectors.toList());
-            GetItemRequestDto getItemRequest = toListGetItemRequestDto(itemRequest, itemsForActualRequest);
+            GetItemRequestDto getItemRequest = toGetItemRequestDto(itemRequest, itemsForActualRequest);
             getItemRequestDto.add(getItemRequest);
         }
         return getItemRequestDto;

@@ -31,7 +31,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidation(final IllegalArgumentException e) {
         log.info(e.getMessage());
         return new ErrorResponse("Ошибка предоставляемых данных", e.getMessage());
