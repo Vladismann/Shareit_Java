@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.common.CommonMethods;
+import ru.practicum.shareit.item.repo.ItemRepo;
 import ru.practicum.shareit.request.dto.CreateItemRequestDto;
 import ru.practicum.shareit.request.dto.GetItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
@@ -20,6 +21,7 @@ import static ru.practicum.shareit.request.ItemRequestMessages.CREATE_ITEM_REQUE
 @Transactional
 public class ItemRequestServiceImpl implements ItemRequestService {
 
+    private final ItemRepo itemRepo;
     private final ItemRequestRepo itemRequestRepo;
     private final UserRepo userRepo;
 

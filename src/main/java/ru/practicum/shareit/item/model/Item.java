@@ -25,4 +25,6 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     private User owner;
+    @Column(name = "request_id")
+    private Long requestId;
 }

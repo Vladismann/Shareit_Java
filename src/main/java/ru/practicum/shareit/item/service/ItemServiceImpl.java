@@ -93,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getAllByUserId(long userId) {
         CommonMethods.checkResourceIsExists(userId, userRepo);
-        List<Item> items = itemRepo.findByOwnerId(userId);
+        List<Item> items = itemRepo.findByOwnerIdOrderById(userId);
         if (items.isEmpty()) {
             log.info(GET_ITEMS, 0);
             return List.of();
@@ -102,7 +102,7 @@ public class ItemServiceImpl implements ItemService {
         List<Booking> bookings = bookingRepo.findAllByItemIdIn(itemsIds);
         Set<Comment> comments = commentRepo.findAllByItemIdIn(itemsIds);
         log.info(GET_ITEMS, userId);
-        return ItemMapper.toItemDtoForOwnerList(itemRepo.findByOwnerId(userId), bookings, comments);
+        return ItemMapper.toItemDtoForOwnerList(itemRepo.findByOwnerIdOrderById(userId), bookings, comments);
     }
 
     @Transactional(readOnly = true)
