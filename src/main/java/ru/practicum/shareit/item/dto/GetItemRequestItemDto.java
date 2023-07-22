@@ -1,6 +1,11 @@
 package ru.practicum.shareit.item.dto;
 
-public class GetItemRequestItem {
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class GetItemRequestItemDto {
 
     private long id;
     private String name;

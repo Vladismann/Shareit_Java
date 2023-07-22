@@ -145,4 +145,18 @@ public class ItemMapper {
         return itemDtoList;
     }
 
+    public GetItemRequestItemDto toGetItemRequestItemDto(Item item) {
+        return GetItemRequestItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .requestId(item.getRequestId())
+                .build();
+    }
+
+    public List<GetItemRequestItemDto> toListGetItemRequestItemDto(List<Item> items) {
+        return items.stream().map(ItemMapper::toGetItemRequestItemDto).collect(Collectors.toList());
+    }
+
 }

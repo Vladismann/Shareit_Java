@@ -3,11 +3,14 @@ package ru.practicum.shareit.request;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.request.dto.CreateItemRequestDto;
+import ru.practicum.shareit.request.dto.AddItemRequestDto;
+import ru.practicum.shareit.request.dto.CreatedItemRequestDto;
 import ru.practicum.shareit.request.dto.GetItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static ru.practicum.shareit.common.CommonForControllers.USER_HEADER;
 import static ru.practicum.shareit.common.Messages.RECEIVED_GET;
@@ -23,14 +26,14 @@ public class ItemRequestController {
     private final ItemRequestService itemRequestService;
 
     @PostMapping()
-    public GetItemRequestDto createItem(@RequestHeader(USER_HEADER) long userId,
-                                        @Valid @RequestBody CreateItemRequestDto itemRequest) {
+    public CreatedItemRequestDto createItem(@RequestHeader(USER_HEADER) long userId,
+                                            @Valid @RequestBody AddItemRequestDto itemRequest) {
         log.info(RECEIVED_POST, ITEM_REQUEST_PATH);
         return itemRequestService.createRequest(userId, itemRequest);
     }
 
     @GetMapping()
-    public GetItemRequestDto getOwnRequest(@RequestHeader(USER_HEADER) long userId) {
+    public List<GetItemRequestDto> getOwnRequest(@RequestHeader(USER_HEADER) long userId) {
         log.info(RECEIVED_GET, ITEM_REQUEST_PATH);
         return itemRequestService.getUserRequests(userId);
     }

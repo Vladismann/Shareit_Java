@@ -14,7 +14,7 @@ import static ru.practicum.shareit.request.ItemRequestMessages.EMPTY_DESCRIPTION
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateItemRequestDto {
+public class AddItemRequestDto {
 
     @NotBlank(message = EMPTY_DESCRIPTION)
     private String description;
