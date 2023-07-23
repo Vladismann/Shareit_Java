@@ -47,7 +47,6 @@ public class CustomPageRequest implements Pageable {
         return hasPrevious() ? new CustomPageRequest((int) (getOffset() - getPageSize()), getPageSize(), getSort()) : this;
     }
 
-
     @Override
     public Pageable previousOrFirst() {
         return hasPrevious() ? previous() : first();
