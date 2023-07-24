@@ -10,6 +10,8 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repo.BookingRepo;
 import ru.practicum.shareit.common.CustomPageRequest;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
@@ -22,6 +24,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepo;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,14 +38,17 @@ public class ItemServiceTest {
 
     private ItemService itemService;
     private final User userSuccess = new User(1, "Test", "Test@mail.ru");
-    private ItemDto itemDto
+    private final ItemDto itemDto
             = new ItemDto(0, "Test", "TestD", true, null, null, null, null);
-    private Item item = new Item(1, "Test", "TestD", true, userSuccess, null);
+    private final Item item = new Item(1, "Test", "TestD", true, userSuccess, null);
     private ItemDto itemSuccess;
 
-    private Set<Comment> comments = Set.of(new Comment(1, "Test", item, userSuccess, LocalDateTime.now()));
-    private List<Booking> bookings = List.of(new Booking(1, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), item, userSuccess, BookingStatus.REJECTED));
+    private final Set<Comment> comments = Set.of(new Comment(1, "Test", item, userSuccess, LocalDateTime.now()));
+    private final List<Booking> bookings = List.of(new Booking(1, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(1), item, userSuccess, BookingStatus.APPROVED));
     Pageable pageable =  new CustomPageRequest(1, 1, Sort.by("id"));
+    CommentDto commentDto = new CommentDto((long)1, "Test", "Test", LocalDateTime.now());
+    Comment comment = new Comment(1, "Test", item, userSuccess, LocalDateTime.now());
+
 
 
     @Mock
@@ -104,13 +110,21 @@ public class ItemServiceTest {
     @Test
     public void getSearchItems() {
         when(itemRepo.search(any(), any())).thenReturn(List.of(item));
-        when(bookingRepo.findAllByItemIdIn(any())).thenReturn(bookings);
+        when(bookingRepo.findAllByItemIdIn(any())).thenReturn(new ArrayList<>());
         when(commentRepo.findAllByItemIdIn(any())).thenReturn(comments);
         List<ItemDto> gottenItems = itemService.searchItemByText("test", pageable);
-        List<ItemDto> expectedItems = ItemMapper.toItemDtoForOwnerList(List.of(item), bookings, comments);
+        List<ItemDto> expectedItems = ItemMapper.toItemDtoForOwnerList(List.of(item), new ArrayList<>(), comments);
         assertEquals(expectedItems, gottenItems);
     }
 
-
+    @Test
+    public void addComment() {
+        when(itemRepo.existsById(any())).thenReturn(true);
+        when(itemRepo.getReferenceById((long) 1)).thenReturn(item);
+        when(commentRepo.save(any())).thenReturn(comment);
+        when(bookingRepo.findAllByItemId(1)).thenReturn(bookings);
+        CommentDto addedComment = itemService.addComment(1, 1, new CreateCommentDto("Test"));
+        assertEquals(commentDto, addedComment);
+    }
 
 }
