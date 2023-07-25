@@ -1,4 +1,4 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.item;
 
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import ru.practicum.shareit.user.service.UserService;
 @Transactional
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class ItemRequestIntegrationTest {
+public class ItemIntegrationTest {
 
     private final ItemService itemService;
     private final UserService userService;
