@@ -45,6 +45,7 @@ public class UserServiceTest {
         when(userRepo.existsById(any())).thenReturn(true);
         when(userRepo.getReferenceById((long) 1)).thenReturn(userSuccess);
         when(userRepo.save(any())).thenReturn(userSuccess);
+
         UserDto updatedUser = service.updateUser((long)1, userDto);
         assertEquals(expectedUser, updatedUser);
     }
@@ -59,6 +60,7 @@ public class UserServiceTest {
     public void getUserById() {
         when(userRepo.existsById(any())).thenReturn(true);
         when(userRepo.getReferenceById((long) 1)).thenReturn(userSuccess);
+
         UserDto getUser = service.getUserDtoById(1);
         assertEquals(expectedUser, getUser);
     }

@@ -37,17 +37,17 @@ import static org.mockito.Mockito.when;
 public class ItemServiceTest {
 
     private ItemService itemService;
-    private final User userSuccess = new User(1, "Test", "Test@mail.ru");
+    private final User userOwner = new User(1, "Test", "Test@mail.ru");
     private final ItemDto itemDto
             = new ItemDto(0, "Test", "TestD", true, null, null, null, null);
-    private final Item item = new Item(1, "Test", "TestD", true, userSuccess, null);
+    private final Item item = new Item(1, "Test", "TestD", true, userOwner, null);
     private ItemDto itemSuccess;
 
-    private final Set<Comment> comments = Set.of(new Comment(1, "Test", item, userSuccess, LocalDateTime.now()));
-    private final List<Booking> bookings = List.of(new Booking(1, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(1), item, userSuccess, BookingStatus.APPROVED));
+    private final Set<Comment> comments = Set.of(new Comment(1, "Test", item, userOwner, LocalDateTime.now()));
+    private final List<Booking> bookings = List.of(new Booking(1, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(1), item, userOwner, BookingStatus.APPROVED));
     Pageable pageable =  new CustomPageRequest(1, 1, Sort.by("id"));
     CommentDto commentDto = new CommentDto((long)1, "Test", "Test", LocalDateTime.now());
-    Comment comment = new Comment(1, "Test", item, userSuccess, LocalDateTime.now());
+    Comment comment = new Comment(1, "Test", item, userOwner, LocalDateTime.now());
 
 
 
@@ -71,8 +71,9 @@ public class ItemServiceTest {
 
     @Test
     public void createItem() {
-        when(userRepo.getReferenceById((long) 1)).thenReturn(userSuccess);
+        when(userRepo.getReferenceById((long) 1)).thenReturn(userOwner);
         when(itemRepo.save(any())).thenReturn(item);
+
         ItemDto createdItem = itemService.createItem(1, itemDto);
         assertEquals(itemSuccess, createdItem);
     }
@@ -80,9 +81,10 @@ public class ItemServiceTest {
     @Test
     public void updateItem() {
         when(itemRepo.existsById(any())).thenReturn(true);
-        when(userRepo.getReferenceById((long) 1)).thenReturn(userSuccess);
+        when(userRepo.getReferenceById((long) 1)).thenReturn(userOwner);
         when(itemRepo.getReferenceById((long) 1)).thenReturn(item);
         when(itemRepo.save(any())).thenReturn(item);
+
         ItemDto updatedItem = itemService.updateItem(1, 1, itemDto);
         assertEquals(itemSuccess, updatedItem);
     }
@@ -91,6 +93,7 @@ public class ItemServiceTest {
     public void getItem() {
         when(itemRepo.existsById(any())).thenReturn(true);
         when(itemRepo.getReferenceById((long) 1)).thenReturn(item);
+
         ItemDto gottenItem = itemService.getItem(1, 1);
         itemSuccess.setComments(new HashSet<>());
         assertEquals(itemSuccess, gottenItem);
@@ -102,6 +105,7 @@ public class ItemServiceTest {
         when(itemRepo.findByOwnerIdOrderById(any(), any())).thenReturn(List.of(item));
         when(bookingRepo.findAllByItemIdIn(any())).thenReturn(bookings);
         when(commentRepo.findAllByItemIdIn(any())).thenReturn(comments);
+
         List<ItemDto> gottenItems = itemService.getAllByUserId(1, pageable);
         List<ItemDto> expectedItems = ItemMapper.toItemDtoForOwnerList(List.of(item), bookings, comments);
         assertEquals(expectedItems, gottenItems);
@@ -112,6 +116,7 @@ public class ItemServiceTest {
         when(itemRepo.search(any(), any())).thenReturn(List.of(item));
         when(bookingRepo.findAllByItemIdIn(any())).thenReturn(new ArrayList<>());
         when(commentRepo.findAllByItemIdIn(any())).thenReturn(comments);
+
         List<ItemDto> gottenItems = itemService.searchItemByText("test", pageable);
         List<ItemDto> expectedItems = ItemMapper.toItemDtoForOwnerList(List.of(item), new ArrayList<>(), comments);
         assertEquals(expectedItems, gottenItems);
@@ -123,6 +128,7 @@ public class ItemServiceTest {
         when(itemRepo.getReferenceById((long) 1)).thenReturn(item);
         when(commentRepo.save(any())).thenReturn(comment);
         when(bookingRepo.findAllByItemId(1)).thenReturn(bookings);
+
         CommentDto addedComment = itemService.addComment(1, 1, new CreateCommentDto("Test"));
         assertEquals(commentDto, addedComment);
     }
