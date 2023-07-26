@@ -2,7 +2,6 @@ package ru.practicum.shareit.item;
 
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -17,6 +16,11 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.util.HashSet;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @AutoConfigureTestDatabase
 @Transactional
 @SpringBootTest
@@ -30,15 +34,17 @@ public class ItemIntegrationTest {
             = new ItemDto(0, "Test", "TestD", true, null, null, null, null);
     private final Pageable pageable = new CustomPageRequest(0, 10, Sort.by("id"));
 
-    @BeforeEach
-    void before() {
-
-    }
-
     @DirtiesContext
     @Test
     public void getUserItems() {
         userService.createUser(userDto);
-        itemService.getAllByUserId(1, pageable);
+        ItemDto dto1 = itemService.createItem(1, itemDto);
+        ItemDto dto2 = itemService.createItem(1, itemDto);
+        dto1.setComments(new HashSet<>());
+        dto2.setComments(new HashSet<>());
+
+        List<ItemDto> itemDtoList = itemService.getAllByUserId(1, pageable);
+
+        assertEquals(List.of(dto1, dto2), itemDtoList);
     }
 }
