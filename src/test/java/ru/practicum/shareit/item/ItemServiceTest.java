@@ -36,6 +36,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class ItemServiceTest {
 
+    private final LocalDateTime created = LocalDateTime.now();
     private ItemService itemService;
     private final User userOwner = new User(1, "Test", "Test@mail.ru");
     private final ItemDto itemDto
@@ -46,8 +47,10 @@ public class ItemServiceTest {
     private final Set<Comment> comments = Set.of(new Comment(1, "Test", item, userOwner, LocalDateTime.now()));
     private final List<Booking> bookings = List.of(new Booking(1, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(1), item, userOwner, BookingStatus.APPROVED));
     Pageable pageable =  new CustomPageRequest(1, 1, Sort.by("id"));
-    CommentDto commentDto = new CommentDto((long)1, "Test", "Test", LocalDateTime.now());
-    Comment comment = new Comment(1, "Test", item, userOwner, LocalDateTime.now());
+    Comment comment = new Comment(1, "Test", item, userOwner, created);
+    CommentDto commentDto = new CommentDto((long)1, "Test", "Test", created);
+
+
 
 
 
@@ -124,6 +127,7 @@ public class ItemServiceTest {
 
     @Test
     public void addComment() {
+
         when(itemRepo.existsById(any())).thenReturn(true);
         when(itemRepo.getReferenceById((long) 1)).thenReturn(item);
         when(commentRepo.save(any())).thenReturn(comment);

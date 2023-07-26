@@ -60,7 +60,8 @@ public class BookingControllerTest {
     public void createBooking() throws Exception {
         when(bookingService.addBooking(anyLong(), any())).thenReturn(getBookingDto);
 
-        MvcResult result = mvc.perform(post(BOOKINGS_PATH).content(mapper.writeValueAsString(bookingDto))
+        MvcResult result = mvc.perform(post(BOOKINGS_PATH)
+                .content(mapper.writeValueAsString(bookingDto))
                         .header(USER_HEADER, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -74,7 +75,8 @@ public class BookingControllerTest {
     public void approveBooking() throws Exception {
         when(bookingService.approveBooking(anyLong(), anyLong(), anyBoolean())).thenReturn(getBookingDto);
 
-        MvcResult result = mvc.perform(patch(BOOKINGS_PATH + BY_ID_PATH, 1).content(mapper.writeValueAsString(bookingDto))
+        MvcResult result = mvc.perform(patch(BOOKINGS_PATH + BY_ID_PATH, 1)
+                .content(mapper.writeValueAsString(bookingDto))
                 .header(USER_HEADER, 1)
                 .param("approved", "true")
                 .characterEncoding(StandardCharsets.UTF_8)
@@ -89,7 +91,7 @@ public class BookingControllerTest {
     public void getBooking() throws Exception {
         when(bookingService.getBooking(anyLong(), anyLong())).thenReturn(getBookingDto);
 
-        MvcResult result = mvc.perform(get(BOOKINGS_PATH + BY_ID_PATH, 1).content(mapper.writeValueAsString(bookingDto))
+        MvcResult result = mvc.perform(get(BOOKINGS_PATH + BY_ID_PATH, 1)
                         .header(USER_HEADER, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -103,7 +105,7 @@ public class BookingControllerTest {
     public void getAllByBooker() throws Exception {
         when(bookingService.getAllBookingsByBooker(anyLong(), any(), any())).thenReturn(List.of(getBookingDto));
 
-        MvcResult result = mvc.perform(get(BOOKINGS_PATH).content(mapper.writeValueAsString(bookingDto))
+        MvcResult result = mvc.perform(get(BOOKINGS_PATH)
                 .header(USER_HEADER, 1)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -118,7 +120,7 @@ public class BookingControllerTest {
     public void getAllByOwner() throws Exception {
         when(bookingService.getAllBookingsByOwner(anyLong(), any(), any())).thenReturn(List.of(getBookingDto));
 
-        MvcResult result = mvc.perform(get(BOOKINGS_PATH + OWNER_PATH).content(mapper.writeValueAsString(bookingDto))
+        MvcResult result = mvc.perform(get(BOOKINGS_PATH + OWNER_PATH)
                 .header(USER_HEADER, 1)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)

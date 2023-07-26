@@ -90,7 +90,6 @@ public class ItemControllerTest {
         when(itemService.getItem(anyLong(), anyLong())).thenReturn(itemDto);
 
         MvcResult result = mvc.perform(get(ITEMS_PATH + BY_ID_PATH, 1)
-                .content(mapper.writeValueAsString(itemDto))
                 .header(USER_HEADER, 1)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +105,6 @@ public class ItemControllerTest {
         when(itemService.getAllByUserId(anyLong(), any())).thenReturn(List.of(itemDto));
 
         MvcResult result = mvc.perform(get(ITEMS_PATH)
-                .content(mapper.writeValueAsString(itemDto))
                 .header(USER_HEADER, 1)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -123,7 +121,6 @@ public class ItemControllerTest {
         when(itemService.searchItemByText(anyString(), any())).thenReturn(List.of(itemDto));
 
         MvcResult result = mvc.perform(get(ITEMS_PATH + SEARCH_PATH)
-                .content(mapper.writeValueAsString(itemDto))
                 .header(USER_HEADER, 1)
                 .param("text", "text")
                 .characterEncoding(StandardCharsets.UTF_8)

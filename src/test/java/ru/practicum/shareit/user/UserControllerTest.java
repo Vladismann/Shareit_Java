@@ -82,7 +82,6 @@ public class UserControllerTest {
         when(userService.getUserDtoById(anyLong())).thenReturn(userDto);
 
         MvcResult result = mvc.perform(get(USERS_PATH + BY_ID_PATH, 1)
-                .content(mapper.writeValueAsString(userDto))
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
@@ -101,7 +100,6 @@ public class UserControllerTest {
         when(userService.getAllUsers()).thenReturn(List.of(userDto));
 
         MvcResult result = mvc.perform(get(USERS_PATH)
-                        .content(mapper.writeValueAsString(userDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
