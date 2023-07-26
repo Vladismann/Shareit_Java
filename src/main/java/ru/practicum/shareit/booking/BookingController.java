@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.GetBookingDto;
+import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
 import ru.practicum.shareit.common.CustomPageRequest;
 
@@ -25,7 +26,7 @@ import static ru.practicum.shareit.common.Messages.*;
 @RequiredArgsConstructor
 public class BookingController {
 
-    private final BookingServiceImpl bookingService;
+    private final BookingService bookingService;
 
     @PostMapping()
     public GetBookingDto createBooking(@RequestHeader(USER_HEADER) long userId,
