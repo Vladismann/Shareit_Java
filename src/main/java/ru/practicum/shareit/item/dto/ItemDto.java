@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.dto.GetItemBookingDto;
 
 import javax.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ import static ru.practicum.shareit.item.ItemMessages.*;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ItemDto {
 
     private long id;

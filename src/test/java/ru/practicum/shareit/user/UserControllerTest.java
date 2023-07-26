@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import ru.practicum.shareit.common.CommonForControllers;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -66,7 +67,7 @@ public class UserControllerTest {
     public void updateUser() throws Exception {
         when(userService.updateUser(anyLong(), any())).thenReturn(userDto);
 
-        mvc.perform(patch(USERS_PATH + BY_ID_PATH, 1)
+        mvc.perform(patch(USERS_PATH + CommonForControllers.BY_ID_PATH, 1)
                         .content(mapper.writeValueAsString(userDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
