@@ -9,10 +9,8 @@ public class CustomPageRequest implements Pageable {
     private final Sort sort;
 
     public CustomPageRequest(int offset, int limit, Sort sort) {
-        if (offset < 0)
-            throw new IllegalArgumentException("Начальный элемент страницы не может быть меньше нуля");
-        if (limit <= 0)
-            throw new IllegalArgumentException("Лимит страницы не может быть меньше или равен нулю");
+        if (offset < 0) throw new IllegalArgumentException("Начальный элемент страницы не может быть меньше нуля");
+        if (limit <= 0) throw new IllegalArgumentException("Лимит страницы не может быть меньше или равен нулю");
         this.offset = offset;
         this.limit = limit;
         this.sort = sort;
@@ -58,7 +56,9 @@ public class CustomPageRequest implements Pageable {
     }
 
     @Override
-    public Pageable withPage(int pageNumber) { return Pageable.ofSize(pageNumber);}
+    public Pageable withPage(int pageNumber) {
+        return Pageable.ofSize(pageNumber);
+    }
 
     @Override
     public boolean hasPrevious() {
