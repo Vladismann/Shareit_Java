@@ -13,6 +13,7 @@ import ru.practicum.shareit.booking.repo.BookingRepo;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
 import ru.practicum.shareit.common.CustomPageRequest;
+import ru.practicum.shareit.exceptions.StateValidationException;
 import ru.practicum.shareit.item.dto.GetBookingItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repo.ItemRepo;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -102,6 +104,14 @@ public class BookingServiceTest {
 
         List<GetBookingDto> createdBookingDto = bookingService.getAllBookingsByBooker(2, "ALL", pageable);
         assertEquals(List.of(getBookingDto), createdBookingDto);
+    }
+
+    @Test
+    public void getBookingsByBookerIncorrectState() {
+        when(bookingRepo.existsById(any())).thenReturn(true);
+        when(bookingRepo.findByBookerId(2, pageable)).thenReturn(List.of(booking));
+
+        assertThrows(StateValidationException.class, () -> bookingService.getAllBookingsByBooker(2, "", pageable));
     }
 
     @Test

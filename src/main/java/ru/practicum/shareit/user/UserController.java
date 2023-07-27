@@ -19,6 +19,7 @@ import static ru.practicum.shareit.user.UserPaths.USERS_PATH;
 @RequestMapping(USERS_PATH)
 @Slf4j
 @RequiredArgsConstructor
+@ControllerAdvice
 public class UserController {
 
     private final UserService userService;

@@ -1,5 +1,8 @@
 package ru.practicum.shareit.common;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class Messages {
 
     public static final String RECEIVED_GET = "Получен запрос GET {}/{}";

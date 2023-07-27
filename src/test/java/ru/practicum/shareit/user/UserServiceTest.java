@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepo;
@@ -14,6 +15,7 @@ import ru.practicum.shareit.user.service.UserServiceImpl;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -63,6 +65,13 @@ public class UserServiceTest {
 
         UserDto getUser = service.getUserDtoById(1);
         assertEquals(expectedUser, getUser);
+    }
+
+    @Test
+    public void getUserByNotFound() {
+        when(userRepo.existsById(any())).thenReturn(false);
+
+        assertThrows(NotFoundException.class, () -> service.getUserDtoById(1));
     }
 
     @Test

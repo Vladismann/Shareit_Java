@@ -1,5 +1,8 @@
 package ru.practicum.shareit.item;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class ItemMessages {
 
     public static final String INCORRECT_ITEM = "Предмет не существует. Id: ";

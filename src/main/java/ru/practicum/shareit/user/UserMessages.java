@@ -1,5 +1,8 @@
 package ru.practicum.shareit.user;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class UserMessages {
 
     public static final String INCORRECT_EMAIL = "Некорректный email! ";
