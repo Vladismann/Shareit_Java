@@ -10,6 +10,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repo.BookingRepo;
 import ru.practicum.shareit.common.CustomPageRequest;
+import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -126,8 +128,18 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void addComment() {
+    public void getSearchItemsBlankText() {
+        List<ItemDto> gottenItems = itemService.searchItemByText("", pageable);
+        assertEquals(0, gottenItems.size());
+    }
 
+    @Test
+    public void getSearchItemsNullText() {
+        assertThrows(ValidationException.class, () -> itemService.searchItemByText(null, pageable));
+    }
+
+    @Test
+    public void addComment() {
         when(itemRepo.existsById(any())).thenReturn(true);
         when(itemRepo.getReferenceById((long) 1)).thenReturn(item);
         when(commentRepo.save(any())).thenReturn(comment);

@@ -86,5 +86,32 @@ public class ItemRequestServiceTest {
         assertEquals(List.of(getItemRequestDto), actualItemRequest);
     }
 
+    @Test
+    public void geUserRequestEmpty() {
+        when(itemRequestRepo.existsById(any())).thenReturn(true);
+        when(itemRequestRepo.findByRequestorNot(anyLong(), any())).thenReturn(List.of());
+
+        List<GetItemRequestDto> actualItemRequest = itemRequestService.getAllRequests(1, pageable);
+        assertEquals(0, actualItemRequest.size());
+    }
+
+    @Test
+    public void geUserAllRequest() {
+        when(itemRequestRepo.existsById(any())).thenReturn(true);
+        when(itemRequestRepo.findByRequestor(anyLong())).thenReturn(List.of(itemRequest));
+        when(itemRepo.findAllByRequestIdIn(List.of((long) 1))).thenReturn(List.of(item));
+
+        List<GetItemRequestDto> actualItemRequest = itemRequestService.getUserRequests(1);
+        assertEquals(List.of(getItemRequestDto), actualItemRequest);
+    }
+
+    @Test
+    public void geUserAllRequestEmpty() {
+        when(itemRequestRepo.existsById(any())).thenReturn(true);
+        when(itemRequestRepo.findByRequestor(anyLong())).thenReturn(List.of());
+
+        List<GetItemRequestDto> actualItemRequest = itemRequestService.getUserRequests(1);
+        assertEquals(0, actualItemRequest.size());
+    }
 
 }
