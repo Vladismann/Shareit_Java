@@ -58,9 +58,7 @@ public class CustomPageRequest implements Pageable {
     }
 
     @Override
-    public Pageable withPage(int pageNumber) {
-        return null;
-    }
+    public Pageable withPage(int pageNumber) { return Pageable.ofSize(pageNumber);}
 
     @Override
     public boolean hasPrevious() {
