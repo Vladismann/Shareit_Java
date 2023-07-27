@@ -21,7 +21,7 @@ public class BookingDtoJsonTest {
     private JacksonTester<BookingDto> dtoJacksonTester;
 
     @Test
-    public void BookingDtoTest() throws IOException {
+    public void bookingDtoTest() throws IOException {
         LocalDateTime created = LocalDateTime.now();
         BookingDto bookingDto = new BookingDto(1, created, created);
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
