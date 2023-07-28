@@ -48,13 +48,9 @@ public class ItemServiceTest {
 
     private final Set<Comment> comments = Set.of(new Comment(1, "Test", item, userOwner, LocalDateTime.now()));
     private final List<Booking> bookings = List.of(new Booking(1, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(1), item, userOwner, BookingStatus.APPROVED));
-    Pageable pageable =  new CustomPageRequest(1, 1, Sort.by("id"));
-    Comment comment = new Comment(1, "Test", item, userOwner, created);
-    CommentDto commentDto = new CommentDto((long)1, "Test", "Test", created);
-
-
-
-
+    private final Pageable pageable = new CustomPageRequest(1, 1, Sort.by("id"));
+    private final Comment comment = new Comment(1, "Test", item, userOwner, created);
+    private final CommentDto commentDto = new CommentDto((long) 1, "Test", "Test", created);
 
     @Mock
     private ItemRepo itemRepo;
@@ -64,7 +60,6 @@ public class ItemServiceTest {
     private CommentRepo commentRepo;
     @Mock
     private BookingRepo bookingRepo;
-
 
     @BeforeEach
     void before() {

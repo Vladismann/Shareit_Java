@@ -38,7 +38,7 @@ public class ItemControllerTest {
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private final ItemDto itemDto
             = new ItemDto(1, "Test", "TestD", true, null, null, null, null);
-    CommentDto commentDto = new CommentDto((long) 1, "Test", "Test", LocalDateTime.now());
+    private final CommentDto commentDto = new CommentDto((long) 1, "Test", "Test", LocalDateTime.now());
     private MockMvc mvc;
 
     @InjectMocks

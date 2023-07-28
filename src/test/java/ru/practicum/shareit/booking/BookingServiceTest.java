@@ -51,7 +51,6 @@ public class BookingServiceTest {
     private final GetBookingItemDto getBookingItemDto = new GetBookingItemDto(1, "Test");
     private GetBookingDto getBookingDto;
 
-
     @Mock
     private ItemRepo itemRepo;
     @Mock

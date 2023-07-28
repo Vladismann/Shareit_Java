@@ -19,5 +19,5 @@ public class CreatedItemRequestDto {
     private Long id;
     private String description;
     @JsonFormat(pattern = DATE_FORMAT)
-    LocalDateTime created;
+    private LocalDateTime created;
 }

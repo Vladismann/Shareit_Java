@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.repo;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
@@ -13,7 +14,7 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
 
     List<Booking> findByBookerId(long id, Pageable pageable);
 
-    List<Booking> findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqual(long id, LocalDateTime currentDate1, LocalDateTime currentDate2, Pageable pageable);
+    List<Booking> findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqual(long id, LocalDateTime startDate1, LocalDateTime startDate2, Pageable pageable);
 
     List<Booking> findAllByBookerIdAndEndLessThan(long id, LocalDateTime currentDate, Pageable pageable);
 
@@ -24,37 +25,37 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
     @Query("select b " +
             "from Booking b " +
             "join b.item i " +
-            "where i.owner.id = ?1")
-    List<Booking> findAllByOwner(long id, Pageable pageable);
+            "where i.owner.id = :id")
+    List<Booking> findAllByOwner(@Param("id") long id, Pageable pageable);
 
     @Query("select b " +
             "from Booking b " +
             "join b.item i " +
-            "where i.owner.id = ?1 " +
-            "and b.start < ?2 " +
-            "and b.end > ?2")
-    List<Booking> findAllCurrentByOwner(long id, LocalDateTime currentDate, Pageable pageable);
+            "where i.owner.id = :id " +
+            "and b.start < :date " +
+            "and b.end > :date")
+    List<Booking> findAllCurrentByOwner(@Param("id") long id, @Param("date") LocalDateTime date, Pageable pageable);
 
     @Query("select b " +
             "from Booking b " +
             "join b.item i " +
-            "where i.owner.id = ?1 " +
-            "and b.end < ?2")
-    List<Booking> findAllPastByOwner(long id, LocalDateTime currentDate, Pageable pageable);
+            "where i.owner.id = :id " +
+            "and b.end < :date")
+    List<Booking> findAllPastByOwner(@Param("id") long id, @Param("date") LocalDateTime date, Pageable pageable);
 
     @Query("select b " +
             "from Booking b " +
             "join b.item i " +
-            "where i.owner.id = ?1 " +
-            "and b.start > ?2")
-    List<Booking> findAllFutureByOwner(long id, LocalDateTime currentDate, Pageable pageable);
+            "where i.owner.id = :id " +
+            "and b.start > :date")
+    List<Booking> findAllFutureByOwner(@Param("id") long id, @Param("date") LocalDateTime date, Pageable pageable);
 
     @Query("select b " +
             "from Booking b " +
             "join b.item i " +
-            "where i.owner.id = ?1 " +
-            "and b.status = ?2")
-    List<Booking> findAllByStatusByOwner(long id, BookingStatus status, Pageable pageable);
+            "where i.owner.id = :id " +
+            "and b.status = :status")
+    List<Booking> findAllByStatusByOwner(@Param("id") long id, @Param("status") BookingStatus status, Pageable pageable);
 
     List<Booking> findAllByItemId(long id);
 

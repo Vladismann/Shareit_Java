@@ -42,6 +42,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return ItemRequestMapper.toGetItemRequest(itemRequest);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<GetItemRequestDto> getUserRequests(long userId) {
         CommonMethods.checkResourceIsExists(userId, userRepo);
@@ -58,6 +59,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return getItemRequestDto;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<GetItemRequestDto> getAllRequests(long userId, Pageable pageable) {
         CommonMethods.checkResourceIsExists(userId, userRepo);
@@ -74,6 +76,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return getItemRequestDto;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public GetItemRequestDto geById(long userId, long requestId) {
         CommonMethods.checkResourceIsExists(userId, userRepo);
