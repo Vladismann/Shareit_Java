@@ -2,7 +2,10 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.common.CustomPageRequest;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -47,16 +50,22 @@ public class ItemController {
     }
 
     @GetMapping()
-    public List<ItemDto> getUserItems(@RequestHeader(USER_HEADER) long userId) {
+    public List<ItemDto> getUserItems(@RequestHeader(USER_HEADER) long userId,
+                                      @RequestParam(defaultValue = "0") int from,
+                                      @RequestParam(defaultValue = "10") int size) {
         log.info(RECEIVED_GET, ITEMS_PATH, USER_HEADER + userId);
-        return itemService.getAllByUserId(userId);
+        Pageable paging = new CustomPageRequest(from, size, Sort.by("id"));
+        return itemService.getAllByUserId(userId, paging);
     }
 
     @GetMapping(SEARCH_PATH)
     public List<ItemDto> searchItems(@RequestHeader(USER_HEADER) long userId,
-                                     @RequestParam String text) {
+                                     @RequestParam String text,
+                                     @RequestParam(defaultValue = "0") int from,
+                                     @RequestParam(defaultValue = "10") int size) {
         log.info(RECEIVED_GET, ITEMS_PATH, SEARCH_PATH + USER_HEADER + userId);
-        return itemService.searchItemByText(text);
+        Pageable paging = new CustomPageRequest(from, size, Sort.by("id"));
+        return itemService.searchItemByText(text, paging);
     }
 
     @PostMapping(BY_ID_PATH + COMMENT_PATH)

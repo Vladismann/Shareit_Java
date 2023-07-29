@@ -1,5 +1,8 @@
 package ru.practicum.shareit.common;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class CommonForControllers {
 
     //For users

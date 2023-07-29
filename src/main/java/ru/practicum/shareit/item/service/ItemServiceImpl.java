@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
@@ -91,9 +92,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemDto> getAllByUserId(long userId) {
+    public List<ItemDto> getAllByUserId(long userId, Pageable pageable) {
         CommonMethods.checkResourceIsExists(userId, userRepo);
-        List<Item> items = itemRepo.findByOwnerId(userId);
+        List<Item> items = itemRepo.findByOwnerIdOrderById(userId, pageable);
         if (items.isEmpty()) {
             log.info(GET_ITEMS, 0);
             return List.of();
@@ -102,17 +103,17 @@ public class ItemServiceImpl implements ItemService {
         List<Booking> bookings = bookingRepo.findAllByItemIdIn(itemsIds);
         Set<Comment> comments = commentRepo.findAllByItemIdIn(itemsIds);
         log.info(GET_ITEMS, userId);
-        return ItemMapper.toItemDtoForOwnerList(itemRepo.findByOwnerId(userId), bookings, comments);
+        return ItemMapper.toItemDtoForOwnerList(items, bookings, comments);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemDto> searchItemByText(String text) {
+    public List<ItemDto> searchItemByText(String text, Pageable pageable) {
         validateSearchText(text);
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        List<Item> items = itemRepo.search(text);
+        List<Item> items = itemRepo.search(text, pageable);
         if (items.isEmpty()) {
             log.info(GET_ITEMS, 0);
             return List.of();

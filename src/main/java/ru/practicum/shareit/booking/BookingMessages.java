@@ -1,5 +1,8 @@
 package ru.practicum.shareit.booking;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class BookingMessages {
 
     public static final String EMPTY_BOOKING_DATE = "Заполните все даты бронирования";

@@ -8,10 +8,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.booking.model.BookingStatus.APPROVED;
@@ -25,6 +22,7 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .requestId(item.getRequestId())
                 .build();
     }
 
@@ -35,6 +33,7 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .comments(commentsToCommentsDtoList(comments))
+                .requestId(item.getRequestId())
                 .build();
     }
 
@@ -89,6 +88,7 @@ public class ItemMapper {
                 .lastBooking(bookingToGetItemBookingDto(lastBooking))
                 .nextBooking(bookingToGetItemBookingDto(nextBooking))
                 .comments(commentsToCommentsDtoList(comments))
+                .requestId(item.getRequestId())
                 .build();
     }
 
@@ -118,6 +118,7 @@ public class ItemMapper {
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
+                .requestId(itemDto.getRequestId())
                 .owner(owner).build();
     }
 
@@ -142,6 +143,20 @@ public class ItemMapper {
             itemDtoList.add(itemDto);
         }
         return itemDtoList;
+    }
+
+    public GetItemRequestItemDto toGetItemRequestItemDto(Item item) {
+        return GetItemRequestItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .requestId(item.getRequestId())
+                .build();
+    }
+
+    public List<GetItemRequestItemDto> toListGetItemRequestItemDto(List<Item> items) {
+        return items.stream().map(ItemMapper::toGetItemRequestItemDto).collect(Collectors.toList());
     }
 
 }

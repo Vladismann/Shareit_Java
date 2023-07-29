@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.common.CreateGroup;
 import ru.practicum.shareit.common.UpdateGroup;
 
@@ -12,6 +13,7 @@ import static ru.practicum.shareit.user.UserMessages.EMPTY_EMAIL;
 import static ru.practicum.shareit.user.UserMessages.INCORRECT_EMAIL;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class UserDto {
     private long id;

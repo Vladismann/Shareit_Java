@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -103,30 +104,30 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<GetBookingDto> getAllBookingsByBooker(long userId, String state) {
+    public List<GetBookingDto> getAllBookingsByBooker(long userId, String state, Pageable pageable) {
         CommonMethods.checkResourceIsExists(userId, userRepo);
         BookingState actualState = getBookingState(state);
         List<Booking> bookings = new ArrayList<>();
         LocalDateTime currentDate = LocalDateTime.now();
         switch (actualState) {
             case ALL:
-                bookings = bookingRepo.findByBookerIdOrderByStartDesc(userId);
+                bookings = bookingRepo.findByBookerId(userId, pageable);
                 break;
             case CURRENT:
                 bookings = bookingRepo
-                        .findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqualOrderByStartDesc(userId, currentDate, currentDate);
+                        .findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqual(userId, currentDate, currentDate, pageable);
                 break;
             case PAST:
-                bookings = bookingRepo.findAllByBookerIdAndEndLessThanOrderByStartDesc(userId, currentDate);
+                bookings = bookingRepo.findAllByBookerIdAndEndLessThan(userId, currentDate, pageable);
                 break;
             case FUTURE:
-                bookings = bookingRepo.findAllByBookerIdAndStartGreaterThanOrderByStartDesc(userId, currentDate);
+                bookings = bookingRepo.findAllByBookerIdAndStartGreaterThan(userId, currentDate, pageable);
                 break;
             case WAITING:
-                bookings = bookingRepo.findByBookerIdAndStatusOrderByStartDesc(userId, WAITING);
+                bookings = bookingRepo.findByBookerIdAndStatus(userId, WAITING, pageable);
                 break;
             case REJECTED:
-                bookings = bookingRepo.findByBookerIdAndStatusOrderByStartDesc(userId, REJECTED);
+                bookings = bookingRepo.findByBookerIdAndStatus(userId, REJECTED, pageable);
                 break;
         }
         log.info(GET_BOOKINGS, bookings.size());
@@ -135,29 +136,29 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<GetBookingDto> getAllBookingsByOwner(long userId, String state) {
+    public List<GetBookingDto> getAllBookingsByOwner(long userId, String state, Pageable pageable) {
         CommonMethods.checkResourceIsExists(userId, userRepo);
         BookingState actualState = getBookingState(state);
         List<Booking> bookings = new ArrayList<>();
         LocalDateTime currentDate = LocalDateTime.now();
         switch (actualState) {
             case ALL:
-                bookings = bookingRepo.findAllByOwner(userId);
+                bookings = bookingRepo.findAllByOwner(userId, pageable);
                 break;
             case CURRENT:
-                bookings = bookingRepo.findAllCurrentByOwner(userId, currentDate);
+                bookings = bookingRepo.findAllCurrentByOwner(userId, currentDate, pageable);
                 break;
             case PAST:
-                bookings = bookingRepo.findAllPastByOwner(userId, currentDate);
+                bookings = bookingRepo.findAllPastByOwner(userId, currentDate, pageable);
                 break;
             case FUTURE:
-                bookings = bookingRepo.findAllFutureByOwner(userId, currentDate);
+                bookings = bookingRepo.findAllFutureByOwner(userId, currentDate, pageable);
                 break;
             case WAITING:
-                bookings = bookingRepo.findAllByStatusByOwner(userId, WAITING);
+                bookings = bookingRepo.findAllByStatusByOwner(userId, WAITING, pageable);
                 break;
             case REJECTED:
-                bookings = bookingRepo.findAllByStatusByOwner(userId, REJECTED);
+                bookings = bookingRepo.findAllByStatusByOwner(userId, REJECTED, pageable);
                 break;
         }
         log.info(GET_BOOKINGS, bookings.size());

@@ -16,13 +16,20 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false)
     private String description;
+
     @Column(nullable = false, name = "is_available")
     private Boolean available;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     private User owner;
+
+    @Column(name = "request_id")
+    private Long requestId;
 }
