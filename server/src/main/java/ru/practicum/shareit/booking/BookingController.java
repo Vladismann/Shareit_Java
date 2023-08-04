@@ -10,7 +10,6 @@ import ru.practicum.shareit.booking.dto.GetBookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.common.CustomPageRequest;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static ru.practicum.shareit.booking.BookingPaths.BOOKINGS_PATH;
@@ -29,7 +28,7 @@ public class BookingController {
 
     @PostMapping()
     public GetBookingDto createBooking(@RequestHeader(USER_HEADER) long userId,
-                                       @Valid @RequestBody BookingDto bookingDto) {
+                                       @RequestBody BookingDto bookingDto) {
         log.info(RECEIVED_POST, BOOKINGS_PATH);
         return bookingService.addBooking(userId, bookingDto);
     }
