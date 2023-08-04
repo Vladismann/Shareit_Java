@@ -11,7 +11,6 @@ import ru.practicum.shareit.request.dto.CreatedItemRequestDto;
 import ru.practicum.shareit.request.dto.GetItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static ru.practicum.shareit.common.CommonForControllers.BY_ID_PATH;
@@ -31,7 +30,7 @@ public class ItemRequestController {
 
     @PostMapping()
     public CreatedItemRequestDto createItem(@RequestHeader(USER_HEADER) long userId,
-                                            @Valid @RequestBody AddItemRequestDto itemRequest) {
+                                            @RequestBody AddItemRequestDto itemRequest) {
         log.info(RECEIVED_POST, ITEM_REQUEST_PATH);
         return itemRequestService.createRequest(userId, itemRequest);
     }

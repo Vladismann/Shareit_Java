@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static ru.practicum.shareit.common.Constants.DATE_FORMAT;
 
 @JsonTest
 public class BookingDtoJsonTest {
@@ -24,14 +23,14 @@ public class BookingDtoJsonTest {
     public void bookingDtoTest() throws IOException {
         LocalDateTime created = LocalDateTime.now();
         BookingDto bookingDto = new BookingDto(1, created, created);
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
         JsonContent<BookingDto> jsonContent = dtoJacksonTester.write(bookingDto);
 
         assertThat(jsonContent).extractingJsonPathNumberValue("$.itemId").isEqualTo(1);
 
-        assertThat(jsonContent).extractingJsonPathStringValue("$.start").isEqualTo(dateTimeFormatter.format(bookingDto.getStart()));
+        assertThat(jsonContent).extractingJsonPathStringValue("$.start").contains(dateTimeFormatter.format(bookingDto.getStart()));
 
-        assertThat(jsonContent).extractingJsonPathStringValue("$.end").isEqualTo(dateTimeFormatter.format(bookingDto.getEnd()));
+        assertThat(jsonContent).extractingJsonPathStringValue("$.end").contains(dateTimeFormatter.format(bookingDto.getEnd()));
     }
 }

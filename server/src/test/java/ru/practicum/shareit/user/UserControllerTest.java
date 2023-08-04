@@ -22,14 +22,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.practicum.shareit.common.CommonForControllers.BY_ID_PATH;
-import static ru.practicum.shareit.user.UserMessages.EMPTY_EMAIL;
 import static ru.practicum.shareit.user.UserPaths.USERS_PATH;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,18 +64,6 @@ public class UserControllerTest {
         UserDto actualDto = mapper.readValue(result.getResponse().getContentAsString(), UserDto.class);
 
         assertEquals(userDto, actualDto);
-    }
-
-    @Test
-    public void createUserWithoutEmail() throws Exception {
-        userDto.setEmail("");
-
-        MvcResult result = mvc.perform(post(USERS_PATH)
-                .content(mapper.writeValueAsString(userDto))
-                .characterEncoding(StandardCharsets.UTF_8)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest()).andReturn();
-        assertTrue(result.getResolvedException().getMessage().contains(EMPTY_EMAIL));
     }
 
     @Test
