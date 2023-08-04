@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -12,7 +13,7 @@ import javax.validation.Valid;
 import static ru.practicum.shareit.common.CommonForControllers.*;
 import static ru.practicum.shareit.common.Messages.*;
 
-@RestController
+@Controller
 @RequestMapping("/items")
 @Slf4j
 @RequiredArgsConstructor
