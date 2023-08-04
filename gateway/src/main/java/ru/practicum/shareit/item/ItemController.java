@@ -56,7 +56,7 @@ public class ItemController {
                                      @RequestParam(defaultValue = "0") int from,
                                      @RequestParam(defaultValue = "10") int size) {
         log.info(RECEIVED_GET, "/items", SEARCH_PATH + USER_HEADER + userId);
-        return itemClient.searchItemByText(text, from, size);
+        return itemClient.searchItemByText(userId, text, from, size);
     }
 
     @PostMapping(BY_ID_PATH + "/comment")
