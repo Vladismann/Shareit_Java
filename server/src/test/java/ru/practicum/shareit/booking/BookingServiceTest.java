@@ -99,7 +99,7 @@ public class BookingServiceTest {
     @Test
     public void getBookingsByBooker() {
         when(bookingRepo.existsById(any())).thenReturn(true);
-        when(bookingRepo.findByBookerIdOrderByStartDesc(2, pageable)).thenReturn(List.of(booking));
+        when(bookingRepo.findByBookerId(2, pageable)).thenReturn(List.of(booking));
 
         List<GetBookingDto> createdBookingDto = bookingService.getAllBookingsByBooker(2, "ALL", pageable);
         assertEquals(List.of(getBookingDto), createdBookingDto);
@@ -108,7 +108,7 @@ public class BookingServiceTest {
     @Test
     public void getBookingsByBookerIncorrectState() {
         when(bookingRepo.existsById(any())).thenReturn(true);
-        when(bookingRepo.findByBookerIdOrderByStartDesc(2, pageable)).thenReturn(List.of(booking));
+        when(bookingRepo.findByBookerId(2, pageable)).thenReturn(List.of(booking));
 
         assertThrows(StateValidationException.class, () -> bookingService.getAllBookingsByBooker(2, "", pageable));
     }
@@ -116,7 +116,7 @@ public class BookingServiceTest {
     @Test
     public void getBookingsByBookerCurrent() {
         when(bookingRepo.existsById(any())).thenReturn(true);
-        when(bookingRepo.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(anyLong(), any(), any(), any()))
+        when(bookingRepo.findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqual(anyLong(), any(), any(), any()))
                 .thenReturn(List.of(booking));
 
         List<GetBookingDto> createdBookingDto = bookingService.getAllBookingsByBooker(2, "CURRENT", pageable);
@@ -126,7 +126,7 @@ public class BookingServiceTest {
     @Test
     public void getBookingsByBookerPast() {
         when(bookingRepo.existsById(any())).thenReturn(true);
-        when(bookingRepo.findAllByBookerIdAndEndBeforeOrderByStartDesc(anyLong(), any(), any()))
+        when(bookingRepo.findAllByBookerIdAndEndLessThan(anyLong(), any(), any()))
                 .thenReturn(List.of(booking));
 
         List<GetBookingDto> createdBookingDto = bookingService.getAllBookingsByBooker(2, "PAST", pageable);
@@ -136,7 +136,7 @@ public class BookingServiceTest {
     @Test
     public void getBookingsByBookerFuture() {
         when(bookingRepo.existsById(any())).thenReturn(true);
-        when(bookingRepo.findAllByBookerIdAndStartAfterOrderByStartDesc(anyLong(), any(), any()))
+        when(bookingRepo.findAllByBookerIdAndStartGreaterThan(anyLong(), any(), any()))
                 .thenReturn(List.of(booking));
 
         List<GetBookingDto> createdBookingDto = bookingService.getAllBookingsByBooker(2, "FUTURE", pageable);
@@ -146,7 +146,7 @@ public class BookingServiceTest {
     @Test
     public void getBookingsByBookerWaiting() {
         when(bookingRepo.existsById(any())).thenReturn(true);
-        when(bookingRepo.findByBookerIdAndStatusOrderByStartDesc(anyLong(), any(), any()))
+        when(bookingRepo.findByBookerIdAndStatus(anyLong(), any(), any()))
                 .thenReturn(List.of(booking));
 
         List<GetBookingDto> createdBookingDto = bookingService.getAllBookingsByBooker(2, "WAITING", pageable);
@@ -156,7 +156,7 @@ public class BookingServiceTest {
     @Test
     public void getBookingsByBookerWaitingRejected() {
         when(bookingRepo.existsById(any())).thenReturn(true);
-        when(bookingRepo.findByBookerIdAndStatusOrderByStartDesc(anyLong(), any(), any()))
+        when(bookingRepo.findByBookerIdAndStatus(anyLong(), any(), any()))
                 .thenReturn(List.of(booking));
 
         List<GetBookingDto> createdBookingDto = bookingService.getAllBookingsByBooker(2, "REJECTED", pageable);

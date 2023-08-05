@@ -12,15 +12,15 @@ import java.util.List;
 
 public interface BookingRepo extends JpaRepository<Booking, Long> {
 
-    List<Booking> findByBookerIdOrderByStartDesc(long id, Pageable pageable);
+    List<Booking> findByBookerId(long id, Pageable pageable);
 
-    List<Booking> findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(long id, LocalDateTime startDate1, LocalDateTime startDate2, Pageable pageable);
+    List<Booking> findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqual(long id, LocalDateTime startDate1, LocalDateTime startDate2, Pageable pageable);
 
-    List<Booking> findAllByBookerIdAndEndBeforeOrderByStartDesc(long id, LocalDateTime currentDate, Pageable pageable);
+    List<Booking> findAllByBookerIdAndEndLessThan(long id, LocalDateTime currentDate, Pageable pageable);
 
-    List<Booking> findAllByBookerIdAndStartAfterOrderByStartDesc(long id, LocalDateTime currentDate, Pageable pageable);
+    List<Booking> findAllByBookerIdAndStartGreaterThan(long id, LocalDateTime currentDate, Pageable pageable);
 
-    List<Booking> findByBookerIdAndStatusOrderByStartDesc(long id, BookingStatus status, Pageable pageable);
+    List<Booking> findByBookerIdAndStatus(long id, BookingStatus status, Pageable pageable);
 
     @Query("select b " +
             "from Booking b " +
