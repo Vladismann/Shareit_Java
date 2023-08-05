@@ -111,23 +111,23 @@ public class BookingServiceImpl implements BookingService {
         LocalDateTime currentDate = LocalDateTime.now();
         switch (actualState) {
             case ALL:
-                bookings = bookingRepo.findByBookerId(userId, pageable);
+                bookings = bookingRepo.findByBookerIdOrderByStartDesc(userId, pageable);
                 break;
             case CURRENT:
                 bookings = bookingRepo
-                        .findAllByBookerIdAndStartLessThanEqualAndEndGreaterThanEqual(userId, currentDate, currentDate, pageable);
+                        .findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, currentDate, currentDate, pageable);
                 break;
             case PAST:
-                bookings = bookingRepo.findAllByBookerIdAndEndLessThan(userId, currentDate, pageable);
+                bookings = bookingRepo.findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, currentDate, pageable);
                 break;
             case FUTURE:
-                bookings = bookingRepo.findAllByBookerIdAndStartGreaterThan(userId, currentDate, pageable);
+                bookings = bookingRepo.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, currentDate, pageable);
                 break;
             case WAITING:
-                bookings = bookingRepo.findByBookerIdAndStatus(userId, WAITING, pageable);
+                bookings = bookingRepo.findByBookerIdAndStatusOrderByStartDesc(userId, WAITING, pageable);
                 break;
             case REJECTED:
-                bookings = bookingRepo.findByBookerIdAndStatus(userId, REJECTED, pageable);
+                bookings = bookingRepo.findByBookerIdAndStatusOrderByStartDesc(userId, REJECTED, pageable);
                 break;
         }
         log.info(GET_BOOKINGS, bookings.size());
