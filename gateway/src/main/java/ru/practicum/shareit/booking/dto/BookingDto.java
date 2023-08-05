@@ -25,6 +25,6 @@ public class BookingDto {
     private LocalDateTime start;
     @NotNull(message = "Заполните конец бронирования")
     @Future(message = "Проверьте корректность даты конца бронирования")
-    @JsonFormat(pattern = DATE_FORMAT)
+
     private LocalDateTime end;
 }
