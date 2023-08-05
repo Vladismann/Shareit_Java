@@ -40,7 +40,7 @@ public class RequestClient extends BaseClient {
         return get("/all?from={from}&size={size}", userId, parameters);
     }
 
-    public ResponseEntity<Object> geById(Long requestId, Long userId) {
+    public ResponseEntity<Object> geById(Long userId, Long requestId) {
         return get("/" + requestId, userId);
     }
 }
