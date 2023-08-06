@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 
@@ -12,7 +13,7 @@ import static ru.practicum.shareit.common.CommonForControllers.BY_ID_PATH;
 import static ru.practicum.shareit.common.CommonForControllers.USER_HEADER;
 import static ru.practicum.shareit.common.Messages.*;
 
-@RestController
+@Controller
 @RequestMapping("/bookings")
 @Slf4j
 @RequiredArgsConstructor

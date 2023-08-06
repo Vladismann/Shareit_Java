@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.common.CreateGroup;
@@ -11,7 +12,7 @@ import ru.practicum.shareit.common.UpdateGroup;
 import static ru.practicum.shareit.common.CommonForControllers.BY_ID_PATH;
 import static ru.practicum.shareit.common.Messages.*;
 
-@RestController
+@Controller
 @RequestMapping("/users")
 @Slf4j
 @RequiredArgsConstructor

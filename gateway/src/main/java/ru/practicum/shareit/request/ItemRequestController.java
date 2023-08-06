@@ -3,6 +3,7 @@ package ru.practicum.shareit.request;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.AddItemRequestDto;
 
@@ -13,7 +14,7 @@ import static ru.practicum.shareit.common.CommonForControllers.USER_HEADER;
 import static ru.practicum.shareit.common.Messages.RECEIVED_GET;
 import static ru.practicum.shareit.common.Messages.RECEIVED_POST;
 
-@RestController
+@Controller
 @RequestMapping("/requests")
 @Slf4j
 @RequiredArgsConstructor
