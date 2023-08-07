@@ -1,6 +1,6 @@
 # java-shareit
-## **Educational project. Message board for item sharing.** <br />
-
+### **Educational project. Message board for item sharing.**
+###
 ### **The application consists of two microservices:**
 ### 1. Gateway - for receiving and validating user requests. The client forwards successful requests to the server.
 ### 2. Server - contains business logic. Works with the database using Hibernate. On a successful request, sends data through the gateway to the client. 
